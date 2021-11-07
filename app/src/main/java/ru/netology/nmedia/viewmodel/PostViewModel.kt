@@ -31,7 +31,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadPosts()
-        refresh()
     }
 
     fun loadPosts() {
@@ -49,16 +48,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refresh(){
+    fun refresh() {
         thread {
-            // Начинаем загрузку
-            _data.postValue(FeedModel(loading = true))
+// Начинаем загрузку
+            _data.postValue(FeedModel(refreshing = true)) // <- вот здесь другой флаг
             try {
-                // Данные успешно получены
+// Данные успешно получены
                 val posts = repository.getAll()
                 FeedModel(posts = posts, empty = posts.isEmpty())
             } catch (e: IOException) {
-                // Получена ошибка
+// Получена ошибка
                 FeedModel(error = true)
             }.also(_data::postValue)
         }
@@ -85,15 +84,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = edited.value?.copy(content = text)
     }
-
-    fun likeById(id: Long) {
-        thread { repository.likeById(id) }
-    }
-
-    fun unlikeById(id: Long){
-        thread { repository.unlikeById(id) }
-    }
-
     fun removeById(id: Long) {
         thread {
             // Оптимистичная модель
@@ -110,4 +100,46 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+    fun likeById(id: Long) {
+        thread {
+            try {
+                val liked = repository.likeById(id)
+                _data.postValue(
+                    FeedModel(
+                        posts = _data.value?.posts.orEmpty().map {
+                            if (it.id == liked.id) liked else it
+                        }
+                    )
+                )
+            } catch (e: IOException) {
+
+                // TODO Обработка ошибки
+            }
+        }
+    }
+
+    fun unlikeById(id: Long) {
+        thread {
+            try {
+                val unliked = repository.unlikeById(id)
+                _data.postValue(
+                    FeedModel(
+                        posts = _data.value?.posts.orEmpty().map {
+                            if (it.id == unliked.id) unliked else it
+                        }
+                    )
+                )
+            } catch (e: IOException) {
+                // TODO Обработка ошибки
+            }
+        }
+    }
 }
+
+//    fun likeById(id: Long) {
+//        thread { repository.likeById(id) }
+//    }
+//
+//    fun unlikeById(id: Long){
+//        thread { repository.unlikeById(id) }
+//    }

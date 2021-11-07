@@ -32,9 +32,13 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
             }
 
+           // нужно в зависимости от контента производить соответствующее действие
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
-                viewModel.unlikeById(post.id)
+                if (post.likedByMe) {
+                    viewModel.unlikeById(post.id)
+                } else {
+                    viewModel.likeById(post.id)
+                }
             }
 
             override fun onRemove(post: Post) {
@@ -62,7 +66,6 @@ class FeedFragment : Fragment() {
             binding.emptyText.isVisible = state.empty
         }
         )
-
         // обновление странички,Для скрытия или показа значка перезагрузки есть метод isRefreshing
         viewModel.data.observe(viewLifecycleOwner, { state ->
             adapter.submitList(state.posts)
