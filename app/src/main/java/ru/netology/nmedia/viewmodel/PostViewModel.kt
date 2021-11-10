@@ -34,34 +34,30 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadPosts() {
-        thread {
-            // Начинаем загрузку
-            _data.postValue(FeedModel(loading = true))
-            try {
-                // Данные успешно получены
-                val posts = repository.getAll()
-                FeedModel(posts = posts, empty = posts.isEmpty())
-            } catch (e: IOException) {
-                // Получена ошибка
-                FeedModel(error = true)
-            }.also(_data::postValue)
-        }
+        _data.value = FeedModel(loading = true)
+        repository.getAllAsync(object : PostRepository.GetAllCallback {
+            override fun onSuccess(posts: List<Post>) {
+                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+            }
+
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
     }
 
     fun refresh() {
-        thread {
-// Начинаем загрузку
-            _data.postValue(FeedModel(refreshing = true)) // <- вот здесь другой флаг
-            try {
-// Данные успешно получены
-                val posts = repository.getAll()
-                FeedModel(posts = posts, empty = posts.isEmpty())
-            } catch (e: IOException) {
-// Получена ошибка
-                FeedModel(error = true)
-            }.also(_data::postValue)
+    _data.value = FeedModel(refreshing = true)
+    repository.getAllAsync(object : PostRepository.GetAllCallback {
+        override fun onSuccess(posts: List<Post>) {
+            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
         }
-    }
+
+        override fun onError(e: Exception) {
+            _data.postValue(FeedModel(error = true))
+        }
+    })
+}
 
     fun save() {
         edited.value?.let {
@@ -84,6 +80,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = edited.value?.copy(content = text)
     }
+
     fun removeById(id: Long) {
         thread {
             // Оптимистичная модель
@@ -100,6 +97,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
     fun likeById(id: Long) {
         thread {
             try {
@@ -136,10 +134,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 }
 
-//    fun likeById(id: Long) {
-//        thread { repository.likeById(id) }
-//    }
-//
-//    fun unlikeById(id: Long){
-//        thread { repository.unlikeById(id) }
+
+//        fun refresh() {
+//        thread {
+//// Начинаем загрузку
+//            _data.postValue(FeedModel(refreshing = true)) // <- вот здесь другой флаг
+//            try {
+//// Данные успешно получены
+//                val posts = repository.getAll()
+//                FeedModel(posts = posts, empty = posts.isEmpty())
+//            } catch (e: IOException) {
+//// Получена ошибка
+//                FeedModel(error = true)
+//            }.also(_data::postValue)
+//        }
 //    }
