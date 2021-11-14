@@ -29,6 +29,7 @@ class PostsAdapter(
         val post = getItem(position)
         holder.bind(post)
     }
+
 }
 
 class PostViewHolder(

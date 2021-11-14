@@ -1,3 +1,5 @@
+
+
 package ru.netology.nmedia.activity
 
 import android.content.Intent
@@ -32,7 +34,7 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
             }
 
-           // нужно в зависимости от контента производить соответствующее действие
+            // нужно в зависимости от контента производить соответствующее действие
             override fun onLike(post: Post) {
                 if (post.likedByMe) {
                     viewModel.unlikeById(post.id)
