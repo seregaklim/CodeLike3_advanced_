@@ -89,61 +89,61 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun removeById(id: Long) {
 
-            repository.removeByIdAsync(id, object : PostRepository.removeByIdCallback {
-                val old = _data.value?.posts.orEmpty()
-                override fun onSuccess(id: Long) {
+        repository.removeByIdAsync(id, object : PostRepository.removeByIdCallback {
+            val old = _data.value?.posts.orEmpty()
+            override fun onSuccess(id: Long) {
 
-                    _data.postValue(
-                        _data.value?.copy(posts = _data.value?.posts.orEmpty()
-                            .filter { it.id != id }
-                        )
-                   )
-                }
+                _data.postValue(
+                    _data.value?.copy(posts = _data.value?.posts.orEmpty()
+                        .filter { it.id != id }
+                    )
+                )
+            }
 
-                override fun onError(e: Exception) {
-                  _data.postValue(_data.value?.copy(posts = old))
+            override fun onError(e: Exception) {
+                _data.postValue(_data.value?.copy(posts = old))
 
-                }
-            })
+            }
+        })
     }
 
 
-        fun likeById(id: Long) {
+    fun likeById(id: Long) {
 
-                repository.likeByIdSync(id, object : PostRepository.likeByIdCallback {
-                    override fun onSuccess(id: Long) {
+        repository.likeByIdSync(id, object : PostRepository.likeByIdCallback {
+            override fun onSuccess(id: Long) {
 
-                        val liked = repository.likeById(id)
-                        _data.postValue(
-                            FeedModel(
-                                posts = _data.value?.posts.orEmpty().map {
-                                    if (it.id == liked.id) liked else it
-                                }
-                            )
-                        )
-                    }
-                    override fun onError(e: Exception) {
-                        _data.postValue(FeedModel(error = true))
-                    }
-                })
-        }
+                val liked = repository.likeById(id)
+                _data.postValue(
+                    FeedModel(
+                        posts = _data.value?.posts.orEmpty().map {
+                            if (it.id == liked.id) liked else it
+                        }
+                    )
+                )
+            }
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
+    }
 
     fun unlikeById(id: Long) {
-            repository.unlikeByIdAsync(id, object : PostRepository.unlikeByCallback {
-                override fun onSuccess(id: Long) {
+        repository.unlikeByIdAsync(id, object : PostRepository.unlikeByCallback {
+            override fun onSuccess(id: Long) {
 
-                    val unliked= repository.unlikeById(id)
-                    _data.postValue(
-                        FeedModel(
-                            posts = _data.value?.posts.orEmpty().map {
-                                if (it.id == unliked.id) unliked else it
-                            }
-                        )
+                val unliked= repository.unlikeById(id)
+                _data.postValue(
+                    FeedModel(
+                        posts = _data.value?.posts.orEmpty().map {
+                            if (it.id == unliked.id) unliked else it
+                        }
                     )
-                }
-                override fun onError(e: Exception) {
-                    _data.postValue(FeedModel(error = true))
-                }
-            })
+                )
+            }
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
     }
 }
