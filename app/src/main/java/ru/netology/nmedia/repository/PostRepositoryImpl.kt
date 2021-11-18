@@ -94,8 +94,7 @@ class PostRepositoryImpl : PostRepository {
 
     override fun unlikeByIdAsync(id: Long, callback: PostRepository.unlikeByCallback) {
         val request: Request = Request.Builder()
-            .post(gson.toJson(id).toRequestBody(jsonType))
-            .delete()
+            .delete(gson.toJson(id).toRequestBody(jsonType))
             .url("${BASE_URL}/api/slow/posts/$id/likes")
             .build()
 
