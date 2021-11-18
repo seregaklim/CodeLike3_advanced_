@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.DELETE
 import ru.netology.nmedia.dto.Post
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -50,13 +51,13 @@ class PostRepositoryImpl : PostRepository {
             .delete()
             .url("${BASE_URL}/api/slow/posts/$id")
             .build()
-
+        //получить  JSON, при удалении  не нужно
         client.newCall(request)
             .enqueue(object : Callback {
+
                 override fun onResponse(call: Call, response: Response) {
-                    val body = response.body?.string() ?: throw RuntimeException("body is null")
                     try {
-                        callback.onSuccess(gson.fromJson(body, object : TypeToken<Post>() {}.type))
+                        callback.onSuccess(id)
                     } catch (e: Exception) {
                         callback.onError(e)
                     }
@@ -94,6 +95,7 @@ class PostRepositoryImpl : PostRepository {
     override fun unlikeByIdAsync(id: Long, callback: PostRepository.unlikeByCallback) {
         val request: Request = Request.Builder()
             .post(gson.toJson(id).toRequestBody(jsonType))
+            .delete()
             .url("${BASE_URL}/api/slow/posts/$id/likes")
             .build()
 
@@ -137,37 +139,6 @@ class PostRepositoryImpl : PostRepository {
                     callback.onError(e)
                 }
             })
-    }
-
-
-    override fun likeById(id: Long): Post {
-        val request: Request = Request.Builder()
-            .post(gson.toJson(id).toRequestBody(jsonType))
-            .url("${BASE_URL}/api/slow/posts/$id/likes")
-            .build()
-
-        return client.newCall(request)
-            .execute()
-            .let { it.body?.string() ?: throw RuntimeException("body is null") }
-            .let {
-                gson.fromJson(it, Post::class.java)
-            }
-    }
-
-
-    override fun unlikeById(id: Long): Post {
-
-        val request: Request = Request.Builder()
-            .delete(gson.toJson(id).toRequestBody(jsonType))
-            .url("${BASE_URL}/api/slow/posts/$id/likes")
-            .build()
-
-        return client.newCall(request)
-            .execute()
-            .let { it.body?.string() ?: throw RuntimeException("body is null") }
-            .let {
-                gson.fromJson(it, Post::class.java)
-            }
     }
 }
 
