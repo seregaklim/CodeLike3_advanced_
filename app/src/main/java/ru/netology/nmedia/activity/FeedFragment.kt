@@ -30,15 +30,10 @@ class FeedFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View {
 
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
-
-        val bundle = Bundle().apply {
-            putString("key", "value")
-        }
-
-        bundleOf("key" to "value", Pair("key2", 1))
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
@@ -94,52 +89,24 @@ class FeedFragment : Fragment() {
 
         // бработка ошибок cо снэк баром
         viewModel.error.observe(viewLifecycleOwner) { error ->
-            when (error.action) {
+            Snackbar.make(
+                binding.root,
+               "${getString(R.string.error_loading)}: ${error.message}",
 
-                error.action->  when (error.action) {
-                    ActionType.Like -> viewModel.likeById(id.toLong())
-                    ActionType.UnlikeById -> viewModel.unlikeById(id.toLong())
-                    ActionType.Refresh -> viewModel.refresh()
-                    ActionType.GetAll ->  Snackbar.make(
-                        binding.root,
-                        "${getString(R.string.error_loading)}: ${error.message}",
-                        Snackbar.LENGTH_INDEFINITE
-                    ).apply {
-                        setAction(R.string.retry_loading) {
-                            when (error.action) {
-                                ActionType.GetAll -> viewModel.loadPosts()
-                            }
-                        }
-                        show()
-                    }
-                    ActionType.Save->  Snackbar.make(
-                        binding.root,
-                        "${getString(R.string.error_loading)}: ${error.message}",
-                        Snackbar.LENGTH_INDEFINITE
-                    ).apply {
-                        setAction(R.string.retry_loading) {
-                            when (error.action) {
+                Snackbar.LENGTH_INDEFINITE
+            ).apply {
+                setAction(R.string.retry_loading) {
+                    when (error.action) {
+                        ActionType.GetAll -> viewModel.loadPosts()
+                        ActionType.Like -> viewModel.likeById(id.toLong())
+                        ActionType.UnlikeById -> viewModel.unlikeById(id.toLong())
+                        ActionType.Refresh -> viewModel.refresh()
+                        ActionType.Save -> viewModel.save()
+                        ActionType.RemoveById -> viewModel.removeById(id.toLong())
 
-                                ActionType.Save -> viewModel.save()
-
-                            }
-                        }
-                        show()
-                    }
-                    ActionType.RemoveById->  Snackbar.make(
-                        binding.root,
-                        "${getString(R.string.error_loading)}: ${error.message}",
-                        Snackbar.LENGTH_INDEFINITE
-                    ).apply {
-                        setAction(R.string.retry_loading) {
-                            when (error.action) {
-
-                                ActionType.RemoveById -> viewModel.removeById(id.toLong())
-                            }
-                        }
-                        show()
                     }
                 }
+                show()
             }
         }
 
@@ -160,3 +127,52 @@ class FeedFragment : Fragment() {
     }
 }
 
+//viewModel.error.observe(viewLifecycleOwner) { error ->
+//    when (error.action) {
+//
+//        error.action->  when (error.action) {
+//            ActionType.Like -> viewModel.likeById(id.toLong())
+//            ActionType.UnlikeById -> viewModel.unlikeById(id.toLong())
+//            ActionType.Refresh -> viewModel.refresh()
+//            ActionType.GetAll ->  Snackbar.make(
+//                binding.root,
+//                "${getString(R.string.error_loading)}: ${error.message}",
+//                Snackbar.LENGTH_INDEFINITE
+//            ).apply {
+//                setAction(R.string.retry_loading) {
+//                    when (error.action) {
+//                        ActionType.GetAll -> viewModel.loadPosts()
+//                    }
+//                }
+//                show()
+//            }
+//            ActionType.Save->  Snackbar.make(
+//                binding.root,
+//                "${getString(R.string.error_loading)}: ${error.message}",
+//                Snackbar.LENGTH_INDEFINITE
+//            ).apply {
+//                setAction(R.string.retry_loading) {
+//                    when (error.action) {
+//
+//                        ActionType.Save -> viewModel.save()
+//
+//                    }
+//                }
+//                show()
+//            }
+//            ActionType.RemoveById->  Snackbar.make(
+//                binding.root,
+//                "${getString(R.string.error_loading)}: ${error.message}",
+//                Snackbar.LENGTH_INDEFINITE
+//            ).apply {
+//                setAction(R.string.retry_loading) {
+//                    when (error.action) {
+//
+//                        ActionType.RemoveById -> viewModel.removeById(id.toLong())
+//                    }
+//                }
+//                show()
+//            }
+//        }
+//    }
+//}

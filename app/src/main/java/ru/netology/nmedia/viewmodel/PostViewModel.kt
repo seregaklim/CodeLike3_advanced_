@@ -83,7 +83,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
                 override fun onError(e: Exception) {
                     _error.postValue(ErrorModel(ErrorType.NetworkError,
-                        ActionType.Save,e.message ?: ""  ))
+                        ActionType.Save,e.message ?: "Не сохранился"  ))
                     edited.postValue(empty)
                 }
             })
