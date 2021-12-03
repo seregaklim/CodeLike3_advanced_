@@ -1,3 +1,4 @@
+
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
@@ -31,7 +32,6 @@ class PostsAdapter(
         val post = getItem(position)
         holder.bind(post)
     }
-
 }
 
 class PostViewHolder(
@@ -44,10 +44,9 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            // в адаптере
+            avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
-            avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

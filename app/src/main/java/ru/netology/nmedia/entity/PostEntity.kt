@@ -3,7 +3,6 @@ package ru.netology.nmedia.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.enumeration.AttachmentType
 
 @Entity
 data class PostEntity(
@@ -22,6 +21,10 @@ data class PostEntity(
         fun fromDto(dto: Post) =
             PostEntity(dto.id, dto.author, dto.content, dto.published, dto.likedByMe, dto.likes,dto.authorAvatar,
             )
+
+
     }
 }
 
+fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
+fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
