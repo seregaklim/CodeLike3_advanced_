@@ -45,7 +45,7 @@ interface PostsApiService {
     suspend fun likeById(@Path("id") id: Long): Response<Post>
 
     @DELETE("posts/{id}/likes")
-    suspend fun dislikeById(@Path("id") id: Long): Response<Post>
+    suspend fun unlikeById(@Path("id") id: Long): Response<Post>
 }
 
 object PostsApi {

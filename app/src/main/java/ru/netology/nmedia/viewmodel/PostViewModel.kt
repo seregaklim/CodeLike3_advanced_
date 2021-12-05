@@ -125,9 +125,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             //_data.postValue(FeedModel(error = true))
         }
     }
-fun dislikeById (id: Long) = viewModelScope.launch {
+fun unlikeById (id: Long) = viewModelScope.launch {
     try {
-        repository.dislikeById(id)
+        repository.unlikeById(id)
 
 
     } catch (e: Exception) {

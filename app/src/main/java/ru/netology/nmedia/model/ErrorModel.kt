@@ -8,7 +8,7 @@ sealed class ActionType {
     object RemoveById: ActionType()
 
     object Like:ActionType()
-    object UnlikeById : ActionType()
+    object unlikeById : ActionType()
     object Refresh : ActionType()
 }
 

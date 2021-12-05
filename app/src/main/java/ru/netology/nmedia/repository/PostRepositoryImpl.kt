@@ -78,17 +78,19 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     }
 
 
-    override suspend fun dislikeById(id: Long) {
+
+
+    override suspend fun unlikeById(id: Long) {
         try {
-            val response = PostsApi.service.dislikeById(id)
+            val response = PostsApi.service.unlikeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
 
-
-            dao.dislikeById(id)
+            //код одинаковый с лайк, коды лайк и дизлайк объединены , так как запрос в sql один
+            dao.likeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

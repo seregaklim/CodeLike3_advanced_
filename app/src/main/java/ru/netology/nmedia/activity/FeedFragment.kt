@@ -39,7 +39,7 @@ class FeedFragment : Fragment() {
 
             override fun onLike(post: Post) {
                 if (post.likedByMe) {
-                    viewModel.dislikeById(post.id)
+                    viewModel.unlikeById(post.id)
                 } else {
                     viewModel.likeById(post.id)
                 }
@@ -87,7 +87,7 @@ class FeedFragment : Fragment() {
                     when (error.action) {
                         ActionType.GetAll -> viewModel.loadPosts()
                         ActionType.Like -> viewModel.likeById(id.toLong())
-                        ActionType.UnlikeById -> viewModel.dislikeById(id.toLong())
+                        ActionType.unlikeById -> viewModel.unlikeById(id.toLong())
                         ActionType.Refresh -> viewModel.refreshPosts()
                         ActionType.Save -> viewModel.save()
                         ActionType.RemoveById -> viewModel.removeById(id.toLong())
