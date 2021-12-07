@@ -5,12 +5,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.entity.PostEntity
 
 @Dao
 interface PostDao {
+
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
-    fun getAll(): LiveData<List<PostEntity>>
+    fun getAll(): Flow<List<PostEntity>>
 
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean
@@ -35,19 +37,18 @@ interface PostDao {
     suspend fun likeById(id: Long)
 
 
-    //код одинаковый, запрос один
-//    @Query(
-//        """
-//        UPDATE PostEntity SET
-//        likes = likes + CASE WHEN likedByMe THEN -1 ELSE 1 END,
-//        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
-//        WHERE id = :id
-//        """
-//    )
-//    suspend fun unlikeById(id: Long)
+    interface Dao {
+        @Query(
+            """
+        UPDATE NewMessegePostEntity SET
+        newer = newer ++1
+       
+        """
+        )
+        suspend fun countMessegePost()
 
+    }
 }
-
 
 
 

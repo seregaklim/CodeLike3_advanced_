@@ -32,6 +32,8 @@ class PostsAdapter(
         val post = getItem(position)
         holder.bind(post)
     }
+
+
 }
 
 class PostViewHolder(
@@ -75,9 +77,12 @@ class PostViewHolder(
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+
+
+            }
         }
     }
-}
+
 
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {

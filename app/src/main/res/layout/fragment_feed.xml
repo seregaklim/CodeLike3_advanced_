@@ -5,9 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newer"
+            style="@style/Widget.AppTheme.newMessageCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            app:icon="@drawable/outline_mark_email_unread_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/footer"
+            tools:checked="@sample/posts.json/data/newerByMe"
+            tools:text="@sample/posts.json/data/newer" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
 
         <TextView
             android:id="@+id/emptyText"
@@ -57,5 +78,7 @@
         android:focusable="true"
         android:layout_gravity="bottom|end"
         app:srcCompat="@drawable/ic_add_24dp" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

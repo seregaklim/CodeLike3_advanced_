@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.switchMap
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
@@ -18,6 +19,8 @@ import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.viewmodel.PostViewModel
+
+
 
 class FeedFragment : Fragment() {
 
@@ -102,6 +105,13 @@ class FeedFragment : Fragment() {
             adapter.submitList(state.posts)
             binding.emptyText.isVisible = state.empty
         })
+
+
+        viewModel.newerCount.observe(viewLifecycleOwner) {
+           viewModel.countMessegePost()
+            Snackbar.make(binding.root,id.toString(), Snackbar.LENGTH_LONG).show()
+        }
+
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()

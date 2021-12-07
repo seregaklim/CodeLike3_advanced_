@@ -1,19 +1,19 @@
 
 package ru.netology.nmedia.api
 
+import androidx.viewbinding.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.dto.Post
 
-private const val BASE_URL = "${BuildConfig.BASE_URL}/api/slow/"
+private const val BASE_URL = "${ru.netology.nmedia.BuildConfig.BASE_URL}/api/slow/"
 
 private val logging = HttpLoggingInterceptor().apply {
-    if (BuildConfig.DEBUG) {
+    if (ru.netology.nmedia.BuildConfig.DEBUG) {
         level = HttpLoggingInterceptor.Level.BODY
     }
 }
@@ -31,6 +31,10 @@ private val retrofit = Retrofit.Builder()
 interface PostsApiService {
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
+
+    //метод  который возвращает все посты новее определённого:
+    @GET("posts/{id}/newer")
+    suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 
     @GET("posts/{id}")
     suspend fun getById(@Path("id") id: Long): Response<Post>
@@ -53,6 +57,4 @@ object PostsApi {
         retrofit.create(PostsApiService::class.java)
     }
 }
-
-
 

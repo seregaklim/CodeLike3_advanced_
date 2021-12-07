@@ -1,6 +1,13 @@
 package ru.netology.nmedia.dto
 
 import ru.netology.nmedia.enumeration.AttachmentType
+data class NewMessegePost(
+  val newer:Long,
+  val post: Post
+
+  )
+
+
 
 data class Post(
     val id: Long,
