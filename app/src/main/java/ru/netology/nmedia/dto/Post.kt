@@ -1,13 +1,6 @@
 package ru.netology.nmedia.dto
 
 import ru.netology.nmedia.enumeration.AttachmentType
-data class NewMessegePost(
-  val newer:Long,
-  val post: Post
-
-  )
-
-
 
 data class Post(
     val id: Long,
@@ -17,9 +10,9 @@ data class Post(
     val likedByMe:Boolean,
     val likes: Int,
     val authorAvatar: String,
-    val attachment: Attachment? = null,
-)
-
+    val newer:Long,
+    val attachment: Attachment? = null
+    )
 
 data class Attachment(
     val url: String,

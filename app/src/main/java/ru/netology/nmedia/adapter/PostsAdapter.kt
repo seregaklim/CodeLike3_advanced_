@@ -1,6 +1,7 @@
 
 package ru.netology.nmedia.adapter
 
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -13,26 +14,30 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.view.loadCircleCrop
 
+
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onShare(post: Post) {}
+    fun onNewer(){}
 }
 
-class PostsAdapter(
+class PostsAdapter (
     private val onInteractionListener: OnInteractionListener,
-) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
+
+    ) : ListAdapter<Post,PostViewHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onInteractionListener)
+        val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false,)
+
+
+        return PostViewHolder(binding, onInteractionListener, )
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
         holder.bind(post)
     }
-
 
 }
 
@@ -41,7 +46,10 @@ class PostViewHolder(
     private val onInteractionListener: OnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(post: Post) {
+
+
+    fun bind(post: Post ){
+
         binding.apply {
             author.text = post.author
             published.text = post.published
@@ -49,6 +57,7 @@ class PostViewHolder(
             avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
+            newer.text= post.newer.toString()
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -78,10 +87,14 @@ class PostViewHolder(
                 onInteractionListener.onShare(post)
             }
 
+       newer.setOnClickListener {
+           onInteractionListener.onNewer()
+       }
 
-            }
         }
     }
+
+}
 
 
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {

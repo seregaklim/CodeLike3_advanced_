@@ -16,6 +16,8 @@ interface PostRepository {
     suspend fun  unlikeById (id: Long)
 
     suspend fun countMessegePost()
+    suspend fun  unCountNewer()
+
 }
 
 

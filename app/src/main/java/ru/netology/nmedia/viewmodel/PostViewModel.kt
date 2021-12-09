@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.NewMessegePost
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.PostRepository
@@ -21,18 +20,8 @@ private val empty = Post(
     authorAvatar = "",
     likedByMe = false,
     likes = 0,
-    published = ""
-)
-
-private  val messegePost = NewMessegePost(
- newer=1,
- post= Post(  id = 0,
-     content = "",
-     author = "",
-     authorAvatar = "",
-     likedByMe = false,
-     likes = 0,
-     published = "")
+    published = "",
+    newer=0,
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -51,8 +40,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    //switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
-    // Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
+//    switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
+//     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
     val newerCount: LiveData<Int> = data.switchMap {
         repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
             .catch { e -> e.printStackTrace() }
@@ -69,11 +58,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val error: LiveData<ErrorModel>
         get() = _error
 
-    // новые посты
-    private val newMessegePost = MutableLiveData(messegePost)
-    private val _postNewMessegePost = SingleLiveEvent<Unit>()
-    val postMessege: LiveData<Unit>
-        get() = _postNewMessegePost
 
     init {
         loadPosts()
@@ -194,15 +178,31 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _error.postValue(
                     ErrorModel(
                         ErrorType.NetworkError,
-                        ActionType.RemoveById, e.message ?: ""
+                        ActionType.CountMessegePost, e.message ?: ""
                     )
                 )
 
                 //_data.postValue(_data.value?.copy(posts = old))
             }
+    }
 
+    fun unCountNewer()= viewModelScope.launch {
+
+        try {
+            repository.unCountNewer()
+        } catch (e: Exception) {
+
+            _error.postValue(
+                ErrorModel(
+                    ErrorType.NetworkError,
+                    ActionType.UnCountMessegePost, e.message ?: ""
+                )
+            )
+            //_data.postValue(_data.value?.copy(posts = old))
         }
     }
+
+}
 
 
 

@@ -10,6 +10,8 @@ sealed class ActionType {
     object Like:ActionType()
     object unlikeById : ActionType()
     object Refresh : ActionType()
+    object CountMessegePost: ActionType()
+    object UnCountMessegePost: ActionType()
 }
 
 sealed class ErrorType {

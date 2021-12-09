@@ -50,6 +50,8 @@ interface PostsApiService {
 
     @DELETE("posts/{id}/likes")
     suspend fun unlikeById(@Path("id") id: Long): Response<Post>
+
+
 }
 
 object PostsApi {

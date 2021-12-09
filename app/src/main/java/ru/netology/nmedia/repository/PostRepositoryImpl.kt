@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.*
 import okio.IOException
 import ru.netology.nmedia.api.*
 import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dto.NewMessegePost
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.toDto
@@ -123,24 +122,35 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             throw UnknownError
         }
     }
-    override suspend fun countMessegePost(){
 
-
+    override suspend fun countMessegePost() {
+        try {
+            dao.countMessegePost()
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-
+    override suspend fun   unCountNewer(){
+        try {
+            dao.unCountNewer()
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
 }
-//class NewMessegePostRepositoryImpl (private val dao: PostDao) : NewMessegePostRepository {
-//    override suspend fun countMessegePost() {
-//        try {
-//            dao.
-//        } catch (e: IOException) {
-//            throw NetworkError
-//        } catch (e: Exception) {
-//            throw UnknownError
-//        }
-//    }
-//}
+
+
+
+
+
+
+
+
 
 
 //class PostRepositoryImpl : PostRepository {

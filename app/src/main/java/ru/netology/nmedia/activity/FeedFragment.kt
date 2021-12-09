@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.switchMap
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
@@ -17,6 +16,7 @@ import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.viewmodel.PostViewModel
 
@@ -34,36 +34,44 @@ class FeedFragment : Fragment() {
 
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-        val adapter = PostsAdapter(object : OnInteractionListener {
-            override fun onEdit(post: Post) {
-                viewModel.edit(post)
-            }
+        val adapter = PostsAdapter(
+            object : OnInteractionListener {
 
-
-            override fun onLike(post: Post) {
-                if (post.likedByMe) {
-                    viewModel.unlikeById(post.id)
-                } else {
-                    viewModel.likeById(post.id)
-                }
-            }
-
-            override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
-            }
-
-            override fun onShare(post: Post) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
+                override fun onEdit(post: Post) {
+                    viewModel.edit(post)
                 }
 
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
-        })
+                override fun onNewer() {
+                    viewModel.refreshPosts()
+                    viewModel.unCountNewer()
+                }
+
+
+                override fun onLike(post: Post) {
+                    if (post.likedByMe) {
+                        viewModel.unlikeById(post.id)
+                    } else {
+                        viewModel.likeById(post.id)
+                    }
+                }
+
+                override fun onRemove(post: Post) {
+                    viewModel.removeById(post.id)
+                }
+
+                override fun onShare(post: Post) {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, post.content)
+                        type = "text/plain"
+                    }
+
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                    startActivity(shareIntent)
+                }
+            },
+        )
 
         binding.list.adapter = adapter
 
@@ -78,7 +86,7 @@ class FeedFragment : Fragment() {
             }
         })
 
-       // бработка ошибок cо снэк баром
+        // бработка ошибок cо снэк баром
         viewModel.error.observe(viewLifecycleOwner) { error ->
             Snackbar.make(
                 binding.root,
@@ -94,7 +102,8 @@ class FeedFragment : Fragment() {
                         ActionType.Refresh -> viewModel.refreshPosts()
                         ActionType.Save -> viewModel.save()
                         ActionType.RemoveById -> viewModel.removeById(id.toLong())
-
+                        ActionType.CountMessegePost -> viewModel.countMessegePost()
+                        ActionType.UnCountMessegePost -> viewModel.unCountNewer()
                     }
                 }
                 show()
@@ -108,10 +117,10 @@ class FeedFragment : Fragment() {
 
 
         viewModel.newerCount.observe(viewLifecycleOwner) {
-           viewModel.countMessegePost()
-            Snackbar.make(binding.root,id.toString(), Snackbar.LENGTH_LONG).show()
-        }
+            viewModel.countMessegePost()
+            Snackbar.make(binding.root,R.string.add_post, Snackbar.LENGTH_LONG).show()
 
+        }
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()
@@ -121,9 +130,31 @@ class FeedFragment : Fragment() {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
-        return binding.root
+//        val post =Post(   id = 0,
+//            content = "",
+//            author = "",
+//            authorAvatar = "",
+//            likedByMe = false,
+//            likes = 0,
+//            published = "",
+//            newer=0,
+//        )
+
+//        binding.newer.text = post.newer.toString()
+//
+//        binding.newer.setOnClickListener {
+//           viewModel.refreshPosts()
+//           viewModel.unCountNewer()
+//        }
+//
+       return binding.root
+
     }
 }
+
+
+
+
 
 
 

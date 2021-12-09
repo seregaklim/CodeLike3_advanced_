@@ -11,6 +11,8 @@ import ru.netology.nmedia.entity.PostEntity
 @Dao
 interface PostDao {
 
+
+
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun getAll(): Flow<List<PostEntity>>
 
@@ -36,19 +38,32 @@ interface PostDao {
     )
     suspend fun likeById(id: Long)
 
-
-    interface Dao {
-        @Query(
-            """
-        UPDATE NewMessegePostEntity SET
-        newer = newer ++1
-       
+    @Query(
         """
-        )
-        suspend fun countMessegePost()
+        UPDATE PostEntity SET
+        newer = newer ++1
+        
+        """
+    )
+    suspend fun countMessegePost()
 
+
+    @Query(
+        """
+        UPDATE PostEntity SET
+        newer = newer - newer
+        
+        """
+    )
+    suspend fun unCountNewer()
     }
-}
+
+
+
+
+
+
+
 
 
 
