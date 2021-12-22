@@ -1,5 +1,4 @@
 package ru.netology.nmedia.activity
-
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
@@ -56,9 +55,6 @@ class LargePhotoFragment: Fragment() {
 
             arguments?.textArg
                 ?.let(binding.share::setText,)
-
-
-
 
 
             viewModel.postCreated.observe(viewLifecycleOwner) {
