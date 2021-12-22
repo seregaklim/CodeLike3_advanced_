@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:id="@+id/photo300"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,6 +89,24 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="content" />
 
+
+        <FrameLayout
+            android:id="@+id/photoContainer"
+            android:layout_width="378dp"
+            android:layout_height="250dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/content">
+
+            <ImageView
+                android:id="@+id/photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/description_photo" />
+        </FrameLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/like"
             style="@style/Widget.AppTheme.LikeCheckBox"
@@ -99,7 +116,7 @@
             android:contentDescription="@string/description_post_like"
             app:icon="@drawable/ic_like_24dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/footer"
+            app:layout_constraintTop_toBottomOf="@+id/photoContainer"
             tools:checked="@sample/posts.json/data/likedByMe"
             tools:text="@sample/posts.json/data/likes" />
 
@@ -108,24 +125,10 @@
             style="@style/Widget.AppTheme.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/common_spacing"
             android:contentDescription="@string/description_post_share"
             app:icon="@drawable/ic_share_24"
             app:layout_constraintStart_toEndOf="@+id/like"
-            app:layout_constraintTop_toBottomOf="@id/footer" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/newer"
-            style="@style/Widget.AppTheme.newMessageCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:contentDescription="@string/description_post_newer"
-            app:icon="@drawable/outline_mark_email_unread_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/content"
-            tools:checked="@sample/posts.json/data/newerByMe"
-            tools:text="@sample/posts.json/data/newer" />
+            app:layout_constraintTop_toBottomOf="@+id/photoContainer" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

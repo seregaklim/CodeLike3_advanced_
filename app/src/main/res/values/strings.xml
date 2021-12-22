@@ -22,4 +22,13 @@
     <string name="channel_remote_name">Server notifications</string>
     <string name="channel_remote_description">Notifications from remote server</string>
     <string name="new_message">A new message</string>
+    <string name="description_select_photo">Select photo</string>
+    <string name="description_take_photo">Take photo</string>
+    <string name="description_photo">Photo</string>
+    <string name="remove">Remove</string>
+    <string name="menu_save">Save</string>
+    <string name="Photo300"> Photo300</string>
+
+
+
 </resources>

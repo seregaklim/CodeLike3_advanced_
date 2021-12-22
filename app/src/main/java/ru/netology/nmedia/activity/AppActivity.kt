@@ -10,6 +10,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.dto.Post
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
@@ -27,9 +28,21 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             }
 
             intent.removeExtra(Intent.EXTRA_TEXT)
+
+
+
             findNavController(R.id.nav_host_fragment)
                 .navigate(
                     R.id.action_feedFragment_to_newPostFragment,
+                    Bundle().apply {
+                        textArg = text
+                    }
+                )
+
+            findNavController(R.id.nav_host_fragment)
+                .navigate(
+                    R.id.action_feedFragment_to_largePhotoFragment,
+
                     Bundle().apply {
                         textArg = text
                     }
@@ -58,3 +71,4 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         }
     }
 }
+
