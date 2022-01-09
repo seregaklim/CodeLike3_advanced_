@@ -1,11 +1,9 @@
 package ru.netology.nmedia.activity
 
 import android.app.Activity
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -80,10 +78,7 @@ class NewPostFragment : Fragment() {
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
-                    Activity.RESULT_OK -> {
-                        val uri: Uri? = it.data?.data
-                        viewModel.changePhoto(uri, uri?.toFile())
-                    }
+                    Activity.RESULT_OK -> viewModel.changePhoto(it.data?.data)
                 }
             }
 
@@ -110,7 +105,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.removePhoto.setOnClickListener {
-            viewModel.changePhoto(null, null)
+            viewModel.changePhoto(null)
         }
 
         viewModel.postCreated.observe(viewLifecycleOwner) {
@@ -135,55 +130,3 @@ class NewPostFragment : Fragment() {
         super.onDestroyView()
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//class NewPostFragment : Fragment() {
-//
-//    companion object {
-//        var Bundle.textArg: String? by StringArg
-//    }
-//
-//    private val viewModel: PostViewModel by viewModels(
-//        ownerProducer = ::requireParentFragment
-//    )
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        val binding = FragmentNewPostBinding.inflate(
-//            inflater,
-//            container,
-//            false
-//        )
-//
-//        arguments?.textArg
-//            ?.let(binding.edit::setText)
-//
-//        binding.ok.setOnClickListener {
-//            viewModel.changeContent(binding.edit.text.toString())
-//            viewModel.save()
-//            AndroidUtils.hideKeyboard(requireView())
-//        }
-//        viewModel.postCreated.observe(viewLifecycleOwner) {
-//            viewModel.loadPosts()
-//            findNavController().navigateUp()
-//        }
-//        return binding.root
-//    }
-//}

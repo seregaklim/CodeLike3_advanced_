@@ -24,7 +24,39 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_feedFragment_to_fragment_enter"
+            app:destination="@id/fragmentEnter"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+
+
+        <action
+            android:id="@+id/action_feedFragment_to_fragment_registration"
+            app:destination="@id/fragmentRegistration"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+
+
+
+
     </fragment>
+    <fragment
+        android:id="@+id/fragmentEnter"
+        android:name="ru.netology.nmedia.activity.FragmentEnter"
+        android:label="fragment_enter"
+        tools:layout="@layout/fragment_enter" />
+
+    <fragment
+        android:id="@+id/fragmentRegistration"
+        android:name="ru.netology.nmedia.activity.FragmentRegistration"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
+
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.netology.nmedia.activity.NewPostFragment"
@@ -34,5 +66,7 @@
         android:id="@+id/largePhotoFragment"
         android:name="ru.netology.nmedia.activity.LargePhotoFragment"
         android:label="fragment_large_photo"
-        tools:layout= "@layout/fragment_large_photo" />
+        tools:layout="@layout/fragment_large_photo" />
+
+
 </navigation>

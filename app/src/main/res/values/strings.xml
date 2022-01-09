@@ -25,10 +25,20 @@
     <string name="description_select_photo">Select photo</string>
     <string name="description_take_photo">Take photo</string>
     <string name="description_photo">Photo</string>
-    <string name="remove">Remove</string>
     <string name="menu_save">Save</string>
     <string name="Photo300"> Photo300</string>
-
-
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="remove">Remove</string>
+    <string name="enter">Enter</string>
+    <string name="Login">Login</string>
+    <string name="Password">Password</string>
+    <string name="Password2">Repeat password</string>
+    <string name="Name">Name</string>
+    <string name="Registration">Registration:</string>
+    <string name="Register"> Register</string>
+    <string name="registered_users"> Available, only to registered users</string>
+    <string name="password_does_not_match"> The password does not match, enter it correctly!</string>
 
 </resources>

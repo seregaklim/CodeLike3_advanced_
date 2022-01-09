@@ -11,10 +11,10 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
 
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
-        require(!hasActiveObservers()) {
+        require (!hasActiveObservers()) {
             error("Multiple observers registered but only one will be notified of changes.")
         }
-
+        
         super.observe(owner) {
             if (pending.compareAndSet(true, false)) {
                 observer.onChanged(it)
@@ -26,30 +26,6 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     override fun setValue(t: T?) {
         pending.set(true)
         super.setValue(t)
-
     }
 }
-
-//class SingleLiveEvent<T> : MutableLiveData<T>() {
-//    // FIXME: упрощённый вариант, пока не прошли Atomic'и
-//    private var pending = false
-//
-//    override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
-//        require (!hasActiveObservers()) {
-//            error("Multiple observers registered but only one will be notified of changes.")
-//        }
-//
-//        super.observe(owner) {
-//            if (pending) {
-//                pending = false
-//                observer.onChanged(it)
-//            }
-//        }
-//    }
-//
-//    override fun setValue(t: T?) {
-//        pending = true
-//        super.setValue(t)
-//    }
-//}
 
