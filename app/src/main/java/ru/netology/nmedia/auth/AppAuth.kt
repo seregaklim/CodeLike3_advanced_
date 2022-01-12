@@ -1,32 +1,48 @@
 package ru.netology.nmedia.auth
 
 import android.content.Context
-import kotlinx.coroutines.flow.*
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.RemoteMessage
+import com.google.firebase.messaging.ktx.messaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import ru.netology.nmedia.api.Api
+import ru.netology.nmedia.dto.PushToken
+
 
 class AppAuth private constructor(context: Context) {
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
     private val idKey = "id"
     private val tokenKey = "token"
 
+
     private val _authStateFlow: MutableStateFlow<AuthState>
 
+    //AppAuth, который отвечает за аутентификацию пользователя. Поэтому его мы и назначим ответственным за отправку push токена:
     init {
         val id = prefs.getLong(idKey, 0)
         val token = prefs.getString(tokenKey, null)
-
         if (id == 0L || token == null) {
             _authStateFlow = MutableStateFlow(AuthState())
             with(prefs.edit()) {
-               clear()
-               apply()
-           }
+                clear()
+                apply()
+            }
         } else {
             _authStateFlow = MutableStateFlow(AuthState(id, token))
         }
+
+        sendPushToken()
     }
 
     val authStateFlow: StateFlow<AuthState> = _authStateFlow.asStateFlow()
 
+    //При изменении аутентификации
     @Synchronized
     fun setAuth(id: Long, token: String) {
         _authStateFlow.value = AuthState(id, token)
@@ -35,14 +51,28 @@ class AppAuth private constructor(context: Context) {
             putString(tokenKey, token)
             apply()
         }
+        sendPushToken()
     }
-
+//При изменении аутентификации
     @Synchronized
     fun removeAuth() {
         _authStateFlow.value = AuthState()
         with(prefs.edit()) {
             clear()
-            commit()
+            apply()
+        }
+        sendPushToken()
+    }
+// при старте приложения токена может не быть, либо он может поменяться в процессе работы, и мы его получим уже в FCMService
+//  на Dispatchers.Default ждём получения токена и, если успешно его получаем, отправляем на сервер.
+    fun sendPushToken(token: String? = null) {
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                val pushToken = PushToken(token ?: Firebase.messaging.token.await())
+                Api.service.save(pushToken)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -62,6 +92,10 @@ class AppAuth private constructor(context: Context) {
 
         private fun buildAuth(context: Context): AppAuth = AppAuth(context)
     }
+
+
 }
 
-data class AuthState(val id: Long = 0, val token: String? = null)
+
+
+data class AuthState(val id: Long = 0, var token: String? = null)

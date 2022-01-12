@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.3'
     def core_version = "1.7.0"
     def appcompat_version = "1.4.0"
     def constraintlayout_version = "2.1.2"
@@ -63,7 +65,7 @@ dependencies {
     def retrofit_version = "2.9.0"
     def retrofitgson_version = "2.9.0"
     def okhttplogging_version = "4.9.2"
-    def coroutines_version = "1.5.0"
+    def coroutines_version = "1.5.2"
     def imagepicker_version = "2.1"
     def play_services_base_version = "17.6.0"
 
@@ -93,6 +95,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttplogging_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
     implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.google.android.gms:play-services-base:$play_services_base_version"
 

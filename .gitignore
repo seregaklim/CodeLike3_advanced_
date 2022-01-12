@@ -23,7 +23,7 @@ local.properties
 captures/
 .externalNativeBuild
 .cxx
-
+.json
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

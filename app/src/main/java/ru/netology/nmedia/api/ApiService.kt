@@ -1,4 +1,6 @@
+
 package ru.netology.nmedia.api
+
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,12 +12,13 @@ import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.PushToken
 import ru.netology.nmedia.dto.User
 
-private const val BASE_URL = "${ru.netology.nmedia.BuildConfig.BASE_URL}/api/slow/"
+private const val BASE_URL = "${BuildConfig.BASE_URL}/api/slow/"
 
 private val logging = HttpLoggingInterceptor().apply {
-    if (ru.netology.nmedia.BuildConfig.DEBUG) {
+    if (BuildConfig.DEBUG) {
         level = HttpLoggingInterceptor.Level.BODY
     }
 }
@@ -39,9 +42,10 @@ private val retrofit = Retrofit.Builder()
     .client(okhttp)
     .build()
 
+interface ApiService {
 
-interface PostsApiService {
-
+    @POST("users/push-tokens")
+    suspend fun save(@Body pushToken: PushToken): Response<Unit>
 
 
     @GET("posts")
@@ -82,11 +86,13 @@ interface PostsApiService {
                              @Field("pass") pass: String,
                              @Field("name") name: String): Response<User>
 
+
+
 }
 
-object PostsApi {
-    val service: PostsApiService by lazy {
-        retrofit.create(PostsApiService::class.java)
+
+object Api {
+    val service: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
     }
 }
-

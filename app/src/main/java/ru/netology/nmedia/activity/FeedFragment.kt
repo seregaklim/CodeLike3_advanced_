@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.ActionType
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -200,24 +202,24 @@ class FeedFragment : Fragment() {
                 binding.newer.text = it.toString()
             }
 
-            binding.swiperefresh.setOnRefreshListener {
-                viewModel.refreshPosts()
+        binding.swiperefresh.setOnRefreshListener {
+            viewModel.refreshPosts()
+        }
+
+        binding.fab.setOnClickListener {
+
+            if (post.ownedByMe) {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            } else {
+
+                Snackbar.make(
+                    binding.root,
+                    "${getString(R.string.registered_users)}",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .show()
             }
-
-
-            binding.fab.setOnClickListener {
-                if (post.ownedByMe) {
-                    findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-                } else {
-
-                    Snackbar.make(
-                        binding.root,
-                        "${getString(R.string.registered_users)}",
-                        Snackbar.LENGTH_INDEFINITE)
-                        .show()
-                }
-            }
-
+        }
             binding.newer.setOnClickListener {
 
                     viewModel.refreshPosts()

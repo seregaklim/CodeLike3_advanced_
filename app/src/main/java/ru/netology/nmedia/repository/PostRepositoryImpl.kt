@@ -28,7 +28,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun getAll() {
         try {
-            val response = PostsApi.service.getAll()
+            val response = Api.service.getAll()
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -45,8 +45,8 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     //метод  который возвращает все посты новее определённого:
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
-            delay(10_000L)
-            val response = PostsApi.service.getNewer(id)
+            delay(120_000L)
+            val response = Api.service.getNewer(id)
 
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -66,7 +66,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun save(post: Post) {
         try {
-            val response = PostsApi.service.save(post)
+            val response = Api.service.save(post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -82,7 +82,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun removeById(id: Long) {
         try {
-            val response = PostsApi.service.removeById(id)
+            val response = Api.service.removeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -96,7 +96,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun likeById(id: Long) {
         try {
-            val response = PostsApi.service.likeById(id)
+            val response = Api.service.likeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -113,7 +113,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun unlikeById(id: Long) {
         try {
-            val response = PostsApi.service.unlikeById(id)
+            val response = Api.service.unlikeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -170,7 +170,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 "file", upload.file.name, upload.file.asRequestBody()
             )
 
-            val response = PostsApi.service.upload(media)
+            val response = Api.service.upload(media)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -185,7 +185,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun updateUser (@Field("login") login: String, @Field("pass") pass: String):User{
         try {
-            val response = PostsApi.service.updateUser("login", "pass" )
+            val response = Api.service.updateUser("login", "pass" )
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -205,7 +205,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                                         @Field("name") name: String):User{
 
         try {
-            val response = PostsApi.service.registerUser( "" ,
+            val response = Api.service.registerUser( "" ,
                 "", "")
 
             if (!response.isSuccessful) {
