@@ -67,8 +67,7 @@ class FCMService : FirebaseMessagingService() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(
                 getString(
-                    R.string.notification_user_liked,
-                    content.recipientId,
+                    content.recipientId.toInt(),
                     content.content,
                 )
             )
@@ -79,7 +78,6 @@ class FCMService : FirebaseMessagingService() {
             .notify(Random.nextInt(100_000), notification)
     }
 
-
     override fun onNewToken(token: String) {
         println(token)
         AppAuth.getInstance().sendPushToken(token)
@@ -88,17 +86,16 @@ class FCMService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         val authState = AuthState ()
 
-        val recipientId = message.data["recipientId"] // тут получаем ид для кого пуш
-        if(recipientId==authState.token ||recipientId == null )
+        val recipientId :String?= message.data["recipientId"] // тут получаем ид для кого пуш
 
+        if(recipientId?.toLong() == authState.id||recipientId == null )
             message.data[action]?.let { when (Action.valueOf(it)) {
                 Action.RECIPIENTID-> handleRecipientId(gson.fromJson(
-                    message.data[content], RecipientId::class.java
-                )
-                )
+                    message.data[content], RecipientId::class.java))
             }
-                if ( recipientId == null  &&  recipientId != authState.token  || recipientId !=null &&  recipientId !=authState.token)
 
+                if ( recipientId == null  &&  recipientId?.toLong() != authState.id
+                    || recipientId !=null &&  recipientId?.toLong() !=authState.id)
                     CoroutineScope(Dispatchers.Default).launch {
                         try {
                             val pushToken = PushToken(authState.token ?: Firebase.messaging.token.await())
@@ -124,7 +121,7 @@ enum class Action {
 }
 
 data class RecipientId(
-    val recipientId :String,
+    val recipientId :Long,
     val content: String
 )
 
