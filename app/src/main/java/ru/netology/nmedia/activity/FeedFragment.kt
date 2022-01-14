@@ -22,6 +22,7 @@ import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.ActionType
+import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
@@ -129,7 +130,11 @@ class FeedFragment : Fragment() {
                     }
                 }
             }
+
+
+
         )
+
         val post = Post(
             id = 0,
             content = "",
@@ -206,7 +211,8 @@ class FeedFragment : Fragment() {
             viewModel.refreshPosts()
         }
 
-        binding.fab.setOnClickListener {
+        binding.fab.setOnClickListener  {
+            post.ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
 
             if (post.ownedByMe) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)

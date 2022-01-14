@@ -2,7 +2,6 @@ package ru.netology.nmedia.auth
 
 import android.content.Context
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -96,6 +95,4 @@ class AppAuth private constructor(context: Context) {
 
 }
 
-
-
-data class AuthState(val id: Long = 0, var token: String? = null)
+data class AuthState(val id: Long? = 0, var token: String? = null)

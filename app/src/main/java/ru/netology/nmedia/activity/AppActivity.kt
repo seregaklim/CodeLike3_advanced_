@@ -117,7 +117,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.signin -> {
-                // TODO: just hardcode it, implementation must be in homework
                 AppAuth.getInstance().setAuth(5, "x-token")
 
                 findNavController(R.id.nav_host_fragment)
@@ -126,7 +125,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 true
             }
             R.id.signup -> {
-                // TODO: just hardcode it, implementation must be in homework
                 AppAuth.getInstance().setAuth(5, "x-token")
 
                 findNavController(R.id.nav_host_fragment)
@@ -135,7 +133,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 true
             }
             R.id.signout -> {
-                // TODO: just hardcode it, implementation must be in homework
 
               findNavController(R.id.nav_host_fragment).navigateUp()
                 AppAuth.getInstance().removeAuth()

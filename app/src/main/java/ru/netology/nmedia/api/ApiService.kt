@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.PushToken
@@ -76,9 +77,10 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("users/authentication")
-    suspend fun updateUser(@Field("login") login: String,
-                           @Field("pass") pass: String): Response<User>
-
+    suspend fun updateUser(
+        @Field("login") login: String,
+        @Field("pass") pass: String
+    ): Response<User>
 
     @FormUrlEncoded
     @POST("users/registration")
@@ -87,10 +89,15 @@ interface ApiService {
                              @Field("name") name: String): Response<User>
 
 
+    @FormUrlEncoded
+    @GET("token") suspend fun getUserId(
+        @Field("id") login: String,
+        @Field("token") pass: String): Response<AuthState>
+
+
+
 
 }
-
-
 object Api {
     val service: ApiService by lazy {
         retrofit.create(ApiService::class.java)

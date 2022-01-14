@@ -9,6 +9,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okio.IOException
 import retrofit2.http.Field
 import ru.netology.nmedia.api.*
+import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.entity.PostEntity
@@ -139,7 +140,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         }
     }
 
-    override suspend fun   unCountNewer(){
+    override suspend fun unCountNewer() {
         try {
             dao.unCountNewer()
         } catch (e: IOException) {
@@ -153,7 +154,8 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         try {
             val media = upload(upload)
             // TODO: add support for other types
-            val postWithAttachment = post.copy(attachment = Attachment(media.id, AttachmentType.IMAGE))
+            val postWithAttachment =
+                post.copy(attachment = Attachment(media.id, AttachmentType.IMAGE))
             save(postWithAttachment)
         } catch (e: AppError) {
             throw e
@@ -182,45 +184,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             throw UnknownError
         }
     }
-
-    override suspend fun updateUser (@Field("login") login: String, @Field("pass") pass: String):User{
-        try {
-            val response = Api.service.updateUser("login", "pass" )
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-
-            return response.body() ?: throw ApiError(response.code(), response.message())
-        } catch (e: java.io.IOException) {
-            throw NetworkError
-        } catch (e: Exception) {
-            throw UnknownError
-        }
-    }
-
-
-
-    override  suspend fun registerUser (@Field("login") login: String,
-                                        @Field("pass") pass: String,
-                                        @Field("name") name: String):User{
-
-        try {
-            val response = Api.service.registerUser( "" ,
-                "", "")
-
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-
-            return response.body() ?: throw ApiError(response.code(), response.message())
-        } catch (e: java.io.IOException) {
-            throw NetworkError
-        } catch (e: Exception) {
-            throw UnknownError
-        }
-    }
-
-
 
 }
 

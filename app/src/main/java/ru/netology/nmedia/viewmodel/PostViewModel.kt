@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import retrofit2.http.Field
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.MediaUpload
@@ -103,6 +104,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     init {
         loadPosts()
     }
+
 
     fun loadPosts() = viewModelScope.launch {
         try {
@@ -246,39 +248,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun updateUser(@Field("login") login: String, @Field("pass") pass: String) {
-        try {
-
-        } catch (e: Exception) {
-
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError,
-                    ActionType.UpdateUser, e.message ?: ""
-                )
-            )
-
-        }
-
-    }
-
-    fun registerUser (@Field("login") login: String,
-                      @Field("pass") pass: String,
-                      @Field("name") name: String){
-        try {
-
-        } catch (e: Exception) {
-
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError,
-                    ActionType.RegisterUser, e.message ?: ""
-                )
-            )
-
-        }
-
-    }
 }
 
 

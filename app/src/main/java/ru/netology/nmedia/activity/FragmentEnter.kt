@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.R
+import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.FragmentEnterBinding
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg
-import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.AuthViewModel
 
 class FragmentEnter : Fragment() {
 
@@ -19,12 +22,20 @@ class FragmentEnter : Fragment() {
     }
 
 
-    private val viewModel: PostViewModel by viewModels(
+    private val authViewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+
     private var fragmentBinding: FragmentEnter? = null
-
-
+    //
+//     fun enterUser(authState:AuthState) {
+//         authState.token?.let { authState.copy(it.toLong()) }?.let {
+//             authViewModel.getUserId(authState.copy(authState.id),
+//                 it
+//             )
+//         }
+//    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,16 +46,31 @@ class FragmentEnter : Fragment() {
             container,
             false
         )
+        val  authState  = AuthState()
 
         binding.enter.setOnClickListener {
 
             AndroidUtils.hideKeyboard(requireView())
-            viewModel.updateUser( binding.login.toString(),binding.pass.toString())
-            findNavController().navigateUp()
-        }
 
+            authViewModel.updateUser(binding.login.toString(), binding.pass.toString())
+            authViewModel.getUserId(authState)
+
+//            if (authState.id == 0L || authState.token == null)
+//
+//
+//                Snackbar.make(
+//                    binding.root,
+//                    "${getString(R.string.password_does_not_match)}",
+//                    Snackbar.LENGTH_INDEFINITE
+//                )
+//                    .show()
+//            else {
+                findNavController().navigateUp()
+            }
+//        }
         return binding.root
     }
+
 }
 
 

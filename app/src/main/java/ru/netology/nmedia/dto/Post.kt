@@ -13,7 +13,7 @@ data class Post(
     val newer: Long,
     val  authorId: Long,
     val attachment: Attachment? = null,
-    val ownedByMe: Boolean = false
+    var ownedByMe: Boolean = false
 )
 
 data class Attachment(

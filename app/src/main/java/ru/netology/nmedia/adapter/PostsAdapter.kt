@@ -3,6 +3,7 @@ package ru.netology.nmedia.adapter
 
 import android.net.Uri
 import android.net.Uri.parse
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
+import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.view.loadCircleCrop
@@ -53,6 +55,11 @@ class PostViewHolder(
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
             photo.setImageURI(parse( "${BuildConfig.BASE_URL}/attachment/моя_картинка.jpg"))
+
+            Bundle().apply {
+                   putBoolean("ownedByMe",true )
+
+                    }
 
             menu.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
