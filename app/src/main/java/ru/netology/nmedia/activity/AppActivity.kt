@@ -56,7 +56,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
             findNavController(R.id.nav_host_fragment)
                 .navigate(
-                    R.id.action_feedFragment_to_fragment_registration,
+                    R.id.action_feedFragment_to_fragment_enter,
 
                     Bundle().apply {
                         textArg = text
@@ -66,7 +66,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
             findNavController(R.id.nav_host_fragment)
                 .navigate(
-                    R.id.action_feedFragment_to_fragment_enter,
+                    R.id.action_feedFragment_to_fragment_registration,
 
                     Bundle().apply {
                         textArg = text

@@ -78,8 +78,9 @@ interface ApiService {
         @Field("pass") pass: String
     ): Response<User>
 
+
     @FormUrlEncoded
-    @POST("users/registration")
+   @POST("user/registration")
     suspend fun registerUser(@Field("login") login: String,
                              @Field("pass") pass: String,
                              @Field("name") name: String): Response<User>
