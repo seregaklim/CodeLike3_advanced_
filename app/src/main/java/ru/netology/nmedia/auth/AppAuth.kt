@@ -10,8 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import okio.IOException
+import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.dto.PushToken
+import ru.netology.nmedia.error.ApiError
+import ru.netology.nmedia.error.NetworkError
+import ru.netology.nmedia.error.UnknownError
 
 
 class AppAuth private constructor(context: Context) {
@@ -91,6 +96,9 @@ class AppAuth private constructor(context: Context) {
 
         private fun buildAuth(context: Context): AppAuth = AppAuth(context)
     }
+
+
+
 
 
 }

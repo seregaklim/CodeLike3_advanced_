@@ -6,9 +6,8 @@ import ru.netology.nmedia.dto.User
 
 interface  AuthRepository {
 
-    suspend fun updateUser(login: String, pass: String)
+    suspend fun  loginUser(login: String, pass: String)
 
     suspend fun registerUser(login: String, pass: String, name: String)
 
-//    suspend fun getUserId(id: Long, token: String)
 }

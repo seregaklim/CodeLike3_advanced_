@@ -12,9 +12,8 @@ sealed class ActionType {
     object Refresh : ActionType()
     object CountMessegePost: ActionType()
     object UnCountMessegePost: ActionType()
-    object UpdateUser:ActionType()
+    object LoginUser:ActionType()
     object RegisterUser: ActionType()
-    object GetUserId: ActionType()
 }
 
 sealed class ErrorType {

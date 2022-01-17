@@ -1,26 +1,27 @@
 package ru.netology.nmedia.repository
 
+import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import okio.IOException
-import ru.netology.nmedia.api.Api
+import ru.netology.nmedia.BuildConfig
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AuthState
-import ru.netology.nmedia.dao.AuthStateDao
-import ru.netology.nmedia.dao.UserDao
-import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.entity.*
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.error.UnknownError
 
 
-class AuthRepositoryimpl(private val daoAuthStateDao: AuthStateDao,private val daoUser:UserDao):AuthRepository {
+class AuthRepositoryimpl():AuthRepository {
 
 
-    override  suspend fun updateUser( login: String,  pass: String) {
+
+    override  suspend fun  loginUser( login: String,  pass: String) {
       try {
-          val response = ru.netology.nmedia.api.Api.service.updateUser(login,pass)
+          val response = ru.netology.nmedia.api.Api.service. loginUser(login,pass)
           if (!response.isSuccessful) {
               throw ApiError(response.code(), response.message())
           }
@@ -41,30 +42,12 @@ class AuthRepositoryimpl(private val daoAuthStateDao: AuthStateDao,private val d
            if (!response.isSuccessful) {
                throw ApiError(response.code(), response.message())
            }
-         //  daoUser.registerUser(login,pass,name)
 
        } catch (e: IOException) {
            throw NetworkError
        } catch (e: Exception) {
            throw UnknownError
        }
-
    }
-
-     suspend fun getUserId(id:Long, token: String) {
-         try {
-             val response = ru.netology.nmedia.api.Api.service.getUserId(id, token)
-             if (!response.isSuccessful) {
-                 throw ApiError(response.code(), response.message())
-             }
-             daoAuthStateDao.getUserId(id, token)
-
-         } catch (e: IOException) {
-             throw NetworkError
-         } catch (e: Exception) {
-             throw UnknownError
-         }
-
-    }
 }
 

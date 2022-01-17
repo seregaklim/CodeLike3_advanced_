@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -130,27 +131,7 @@ class FeedFragment : Fragment() {
                     }
                 }
             }
-
-
-
         )
-
-        val post = Post(
-            id = 0,
-            content = "",
-            author = "",
-            authorAvatar = "",
-            authorId = 0,
-            likedByMe = false,
-            likes = 0,
-            published = "",
-            newer =0,
-            attachment = Attachment (
-                url = "http://10.0.2.2:9999/media/d7dff806-4456-4e35-a6a1-9f2278c5d639.png",
-                type = AttachmentType.IMAGE
-            )
-        )
-
 
             binding.list.adapter = adapter
 
@@ -212,33 +193,31 @@ class FeedFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener  {
-            post.ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
+            val ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
+            if (ownedByMe) {
+            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            } else {
 
-//            if (post.ownedByMe) {
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-//            } else {
-
-//                Snackbar.make(
-//                    binding.root,
-//                    "${getString(R.string.registered_users)}",
-//                    Snackbar.LENGTH_INDEFINITE
-//                )
-//                    .show()
-//            }
-        }
-            binding.newer.setOnClickListener {
-
-                    viewModel.refreshPosts()
-                    viewModel.unCountNewer()
-                    binding.newer.visibility = View.INVISIBLE
+                Snackbar.make(
+                    binding.root,
+                    "${getString(R.string.registered_users)}",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .show()
             }
+        }
+
+
+        binding.newer.setOnClickListener {
+
+            viewModel.refreshPosts()
+            viewModel.unCountNewer()
+            binding.newer.visibility = View.INVISIBLE
+        }
 
         return binding.root
     }
 }
-
-
-
 
 
 

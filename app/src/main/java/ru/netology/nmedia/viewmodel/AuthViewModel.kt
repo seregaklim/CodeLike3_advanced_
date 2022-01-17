@@ -25,9 +25,7 @@ private val  authState  = AuthState(
 class AuthViewModel(application: Application) : AndroidViewModel(application){
 
     private val repository: AuthRepository =
-        AuthRepositoryimpl(AppDb.getInstance(context = application).authStateDao(),
-            AppDb.getInstance(context = application).userDao())
-
+        AuthRepositoryimpl()
 
         val data: LiveData<AuthState> = getInstance()
             .authStateFlow
@@ -45,12 +43,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    fun updateUser(login:String, pass:String) = viewModelScope.launch {
+    fun  loginUser(login:String, pass:String) = viewModelScope.launch {
          try {
-             repository.updateUser(login,pass)
+             repository. loginUser(login,pass)
          } catch (e: Exception) {
-             _error.postValue(ErrorModel(ErrorType.AppError, ActionType.Like, e.message ?: ""))
-             //_data.postValue(FeedModel(error = true))
+             _error.postValue(ErrorModel(ErrorType.AppError, ActionType.LoginUser, e.message ?: ""))
          }
      }
 
@@ -61,19 +58,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
               repository.registerUser(login,pass,name)
           } catch (e: Exception) {
               _error.postValue(ErrorModel(ErrorType.AppError, ActionType.RegisterUser, e.message ?: ""))
-              //_data.postValue(FeedModel(error = true))
           }
       }
+  }
 
-
-
-//    fun getUserId(id:Long, token:String)= viewModelScope.launch {
-//        try {
-//            repository.getUserId(id,token)
-//        } catch (e: Exception) {
-//            _error.postValue(ErrorModel(ErrorType.AppError, ActionType.GetUserId, e.message ?: ""))
-//            //_data.postValue(FeedModel(error = true))
-//        }
-//    }
-}
 

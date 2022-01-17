@@ -50,17 +50,18 @@ class FragmentRegistration: Fragment() {
                 binding.login.toString(),
                 binding.pass.toString()
             )
-//            if (post.ownedByMe) {
+            val ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
+           if (ownedByMe) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
 
-//            } else {
-//                Snackbar.make(
-//                    binding.root,
-//                    "${getString(R.string.password_does_not_match)}",
-//                    Snackbar.LENGTH_INDEFINITE
-//                )
-//                    .show()
-//            }
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    "${getString(R.string.password_does_not_match)}",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .show()
+            }
 
         }
 
@@ -73,7 +74,7 @@ class FragmentRegistration: Fragment() {
             ).apply {
                 setAction(R.string.retry_loading) {
                     when (error.action) {
-                        ActionType.UpdateUser ->authViewModel.registerUser(
+                        ActionType.RegisterUser ->authViewModel.registerUser(
                             binding.name.toString(),
                             binding.login.toString(),
                             binding.pass.toString()
