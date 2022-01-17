@@ -9,8 +9,6 @@ import ru.netology.nmedia.enumeration.AttachmentType
 @Dao
 interface PostDao {
 
-
-
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun getAll(): Flow<List<PostEntity>>
 
@@ -54,7 +52,6 @@ interface PostDao {
         """
     )
     suspend fun unCountNewer()
-
 
 
 

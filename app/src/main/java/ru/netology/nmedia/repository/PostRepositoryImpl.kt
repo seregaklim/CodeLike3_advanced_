@@ -196,6 +196,100 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
 
 
+
+
+
+
+
+
+
+//class AuthRepositoryimpl:  AuthRepository ( val dao: AuthStateDao)
+//{
+
+//    override suspend fun updateUser(
+//        @Field("login") login: String,
+//        @Field("pass") pass: String
+//    ): User {
+//        try {
+//            val response = Api.service.updateUser("login", "pass")
+//            if (!response.isSuccessful) {
+//                throw ApiError(response.code(), response.message())
+//            }
+//
+//            return response.body() ?: throw ApiError(response.code(), response.message())
+//        } catch (e: java.io.IOException) {
+//            throw NetworkError
+//        } catch (e: Exception) {
+//            throw UnknownError
+//        }
+//    }
+//
+//
+//    override suspend fun registerUser(
+//        @Field("login") login: String,
+//        @Field("pass") pass: String,
+//        @Field("name") name: String
+//    ): User {
+//
+//        try {
+//            val response = Api.service.registerUser(
+//                "",
+//                "", ""
+//            )
+//
+//            if (!response.isSuccessful) {
+//                throw ApiError(response.code(), response.message())
+//            }
+//
+//            return response.body() ?: throw ApiError(response.code(), response.message())
+//        } catch (e: java.io.IOException) {
+//            throw NetworkError
+//        } catch (e: Exception) {
+//            throw UnknownError
+//        }
+//    }
+//
+//    override suspend fun getUserId(login: String, password: String) {
+//
+//        try {
+//            val response = Api.service.getUserId( "id" ,
+//                "token")
+//
+//
+//            if (!response.isSuccessful) {
+//                throw ApiError(response.code(), response.message())
+//            }
+//            val body = response.body() ?: throw ApiError(response.code(), response.message())
+//
+//        } catch (e: java.io.IOException) {
+//            throw NetworkError
+//        } catch (e: Exception) {
+//            throw UnknownError
+//        }
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //class PostRepositoryImpl : PostRepository {
 //
 //    override fun getAllAsync(callback: PostRepository.Callback<List<Post>>) {

@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.FragmentRegistrationBinding
+import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
@@ -28,13 +29,7 @@ class FragmentRegistration: Fragment() {
     )
 
     private var fragmentBinding: FragmentRegistration? = null
-//    fun enterUser(authState: AuthState) {
-//        authState.token?.let { authState.copy(it.toLong()) }?.let {
-//            authViewModel.getUserId(authState.copy(authState.id),
-//                it
-//            )
-//        }
-//    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,33 +41,52 @@ class FragmentRegistration: Fragment() {
             container,
             false
         )
-        val authState = AuthState()
 
         binding.register.setOnClickListener {
 
-//            if (binding.pass==binding.pass2) {
             AndroidUtils.hideKeyboard(requireView())
             authViewModel.registerUser(
                 binding.name.toString(),
                 binding.login.toString(),
                 binding.pass.toString()
             )
+//            if (post.ownedByMe) {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
 
-            authViewModel.getUserId(authState)
-
-//            if (authState.id == 0L || authState.token == null)
-//
-//
+//            } else {
 //                Snackbar.make(
 //                    binding.root,
 //                    "${getString(R.string.password_does_not_match)}",
 //                    Snackbar.LENGTH_INDEFINITE
 //                )
 //                    .show()
-//            else {
-                findNavController().navigateUp()
 //            }
+
         }
-        return binding.root
+
+        authViewModel.error.observe(viewLifecycleOwner) { error ->
+            Snackbar.make(
+                binding.root,
+                "${getString(R.string.error_loading)}: ${error.message}",
+
+                Snackbar.LENGTH_INDEFINITE
+            ).apply {
+                setAction(R.string.retry_loading) {
+                    when (error.action) {
+                        ActionType.UpdateUser ->authViewModel.registerUser(
+                            binding.name.toString(),
+                            binding.login.toString(),
+                            binding.pass.toString()
+                        )
+                    }
+                }
+                show()
+            }
+        }
+
+
+
+
+       return binding.root
     }
 }

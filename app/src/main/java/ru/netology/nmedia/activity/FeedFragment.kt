@@ -214,17 +214,17 @@ class FeedFragment : Fragment() {
         binding.fab.setOnClickListener  {
             post.ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
 
-            if (post.ownedByMe) {
+//            if (post.ownedByMe) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-            } else {
+//            } else {
 
-                Snackbar.make(
-                    binding.root,
-                    "${getString(R.string.registered_users)}",
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .show()
-            }
+//                Snackbar.make(
+//                    binding.root,
+//                    "${getString(R.string.registered_users)}",
+//                    Snackbar.LENGTH_INDEFINITE
+//                )
+//                    .show()
+//            }
         }
             binding.newer.setOnClickListener {
 

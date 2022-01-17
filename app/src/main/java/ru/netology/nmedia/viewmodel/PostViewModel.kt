@@ -39,14 +39,6 @@ private val empty = Post(
         type = AttachmentType.IMAGE
     )
 )
-private val User = User(
-    id = 0L,
-    login = "anonymous",
-    name = "Anonymous",
-    avatar = "",
-    authorities = listOf("ROLE_ANONYMOUS")
-)
-
 
 
 @ExperimentalCoroutinesApi

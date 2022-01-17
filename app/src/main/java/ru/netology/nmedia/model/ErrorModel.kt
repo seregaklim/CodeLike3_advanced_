@@ -14,6 +14,7 @@ sealed class ActionType {
     object UnCountMessegePost: ActionType()
     object UpdateUser:ActionType()
     object RegisterUser: ActionType()
+    object GetUserId: ActionType()
 }
 
 sealed class ErrorType {

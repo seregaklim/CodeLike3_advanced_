@@ -1,4 +1,3 @@
-
 package ru.netology.nmedia.api
 
 import okhttp3.MultipartBody
@@ -91,7 +90,7 @@ interface ApiService {
 
     @FormUrlEncoded
     @GET("token") suspend fun getUserId(
-        @Field("id") login: String,
+        @Field("id") login: Long,
         @Field("token") pass: String): Response<AuthState>
 
 

@@ -1,17 +1,14 @@
 package ru.netology.nmedia.repository
 
-import retrofit2.http.Field
+import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dto.User
 
-interface  AuthRepository{
+interface  AuthRepository {
 
-    suspend fun updateUser(@Field("login") login: String, @Field("pass") pass: String): User
+    suspend fun updateUser(login: String, pass: String)
 
-    suspend fun registerUser (@Field("login") login: String,
-                              @Field("pass") pass: String,
-                              @Field("name") name: String): User
+    suspend fun registerUser(login: String, pass: String, name: String)
 
-
-    suspend fun getUserId(login: String, password: String)
+//    suspend fun getUserId(id: Long, token: String)
 }
