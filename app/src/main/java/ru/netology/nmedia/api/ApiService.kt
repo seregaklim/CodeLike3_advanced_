@@ -2,12 +2,14 @@ package ru.netology.nmedia.api
 
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.netology.nmedia.BuildConfig
+import ru.netology.nmedia.api.Api.service
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dto.*
@@ -78,8 +80,9 @@ interface ApiService {
         @Field("pass") pass: String
     ): Response<User>
 
+
     @FormUrlEncoded
-    @POST("users/registration")
+   @POST("user/registration")
     suspend fun registerUser(@Field("login") login: String,
                              @Field("pass") pass: String,
                              @Field("name") name: String): Response<User>
