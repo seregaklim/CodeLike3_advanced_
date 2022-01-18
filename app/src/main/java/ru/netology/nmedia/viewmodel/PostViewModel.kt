@@ -245,8 +245,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
-
-
 //    fun save() {
 //        edited.value?.let {
 //            _postCreated.value = Unit

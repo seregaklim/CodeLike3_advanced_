@@ -48,7 +48,6 @@ class FragmentEnter : Fragment() {
         binding.enter.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 
-
             authViewModel.loginUser(binding.login.toString(), binding.pass.toString())
             val ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
             if (ownedByMe) {

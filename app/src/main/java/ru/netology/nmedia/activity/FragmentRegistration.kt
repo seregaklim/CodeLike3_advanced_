@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
+import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.FragmentRegistrationBinding
 import ru.netology.nmedia.model.ActionType
@@ -44,13 +45,14 @@ class FragmentRegistration: Fragment() {
 
         binding.register.setOnClickListener {
 
-           // AndroidUtils.hideKeyboard(requireView())
-            authViewModel.registerUser(
-                binding.name.toString(),
-                binding.login.toString(),
-                binding.pass.toString()
+                AndroidUtils.hideKeyboard(requireView())
 
-            )
+                authViewModel.registerUser(
+                    binding.name.toString(),
+                    binding.login.toString(),
+                    binding.pass.toString()
+
+                )
 
             val ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
            if (ownedByMe) {
@@ -64,7 +66,6 @@ class FragmentRegistration: Fragment() {
                 )
                     .show()
             }
-
         }
 
         authViewModel.error.observe(viewLifecycleOwner) { error ->
@@ -87,9 +88,7 @@ class FragmentRegistration: Fragment() {
             }
         }
 
-
-
-
+        
        return binding.root
     }
 }
