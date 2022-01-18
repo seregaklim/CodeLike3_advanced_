@@ -49,19 +49,12 @@ class FragmentEnter : Fragment() {
             AndroidUtils.hideKeyboard(requireView())
 
             authViewModel.loginUser(binding.login.toString(), binding.pass.toString())
-            val ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
-            if (ownedByMe) {
-                findNavController().navigateUp()
 
-            } else {
-                Snackbar.make(
-                    binding.root,
-                    "${getString(R.string.password_does_not_match)}",
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .show()
+            authViewModel.data.observe(viewLifecycleOwner) { authState ->
+                if (authState.id != 0L) {
+                    findNavController().navigateUp()
+                }
             }
-
         }
 
         authViewModel.error.observe(viewLifecycleOwner) { error ->

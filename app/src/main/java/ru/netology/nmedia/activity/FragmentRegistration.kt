@@ -45,28 +45,21 @@ class FragmentRegistration: Fragment() {
 
         binding.register.setOnClickListener {
 
+
+
                 AndroidUtils.hideKeyboard(requireView())
 
                 authViewModel.registerUser(
-                    binding.name.toString(),
-                    binding.login.toString(),
-                    binding.pass.toString()
-
+                    binding.login.toString(), binding.name.toString(), binding.pass.toString()
                 )
 
-            val ownedByMe=(arguments?.getBoolean("ownedByMe")==true)
-           if (ownedByMe) {
-            findNavController().navigateUp()
+                authViewModel.data.observe(viewLifecycleOwner) { authState ->
+                    if (authState.id != 0L) {
+                        findNavController().navigateUp()
+                    }
+                }
 
-            } else {
-                Snackbar.make(
-                    binding.root,
-                    "${getString(R.string.password_does_not_match)}",
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .show()
-            }
-        }
+    }
 
         authViewModel.error.observe(viewLifecycleOwner) { error ->
             Snackbar.make(
@@ -88,7 +81,7 @@ class FragmentRegistration: Fragment() {
             }
         }
 
-        
-       return binding.root
+
+        return binding.root
     }
 }

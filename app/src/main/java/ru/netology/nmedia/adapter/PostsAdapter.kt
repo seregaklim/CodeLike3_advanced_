@@ -56,10 +56,6 @@ class PostViewHolder(
             like.text = "${post.likes}"
             photo.setImageURI(parse( "${BuildConfig.BASE_URL}/attachment/моя_картинка.jpg"))
 
-            Bundle().apply {
-                   putBoolean("ownedByMe",true )
-
-                    }
 
             menu.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
