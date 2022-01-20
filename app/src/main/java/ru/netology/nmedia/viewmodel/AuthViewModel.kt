@@ -17,9 +17,6 @@ import ru.netology.nmedia.repository.AuthRepository
 import ru.netology.nmedia.repository.AuthRepositoryimpl
 import ru.netology.nmedia.util.SingleLiveEvent
 
-private val  authState  = AuthState(
-    id = 0,
-    token = null)
 
 @ExperimentalCoroutinesApi
 class AuthViewModel(application: Application) : AndroidViewModel(application){
@@ -44,7 +41,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
         get() = _dataState
 
     fun  loginUser(login:String, pass:String) = viewModelScope.launch {
-         try {
+
+        try {
              repository. loginUser(login,pass)
          } catch (e: Exception) {
              _error.postValue(ErrorModel(ErrorType.AppError, ActionType.LoginUser, e.message ?: ""))
@@ -54,6 +52,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
       fun registerUser(login: String,
                               pass: String,
                               name: String) = viewModelScope.launch {
+
           try {
               repository.registerUser(login,pass,name)
           } catch (e: Exception) {

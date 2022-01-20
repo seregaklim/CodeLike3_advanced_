@@ -14,10 +14,7 @@ import retrofit2.http.Field
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.Attachment
-import ru.netology.nmedia.dto.MediaUpload
-import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.PostRepository
@@ -40,6 +37,15 @@ private val empty = Post(
     )
 )
 
+ val token = Token(
+    id =0,
+    token = "",
+    avatar= "" ,
+)
+ val authState = AuthState(
+id = 0,
+token = ""
+    )
 
 @ExperimentalCoroutinesApi
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -53,13 +59,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     //Для реализации репозитория мы можем добавить явное указание того,
     // какой контекст использовать для работы с помощью flowOn:
 
-    val data: LiveData<FeedModel> = AppAuth.getInstance()
+    val data: LiveData<FeedModel> = AppAuth.getInstance( )
         .authStateFlow
         .flatMapLatest { (myId, _) ->
             repository.data
                 .map { posts ->
                     FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
+                        posts.map { it.copy(ownedByMe = it.authorId == myId)
+
+                        },
+
                         posts.isEmpty()
                     )
                 }

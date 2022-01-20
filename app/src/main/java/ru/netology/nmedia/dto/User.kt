@@ -6,4 +6,6 @@ data class User(
     val name: String,
     val avatar: String,
     val authorities: List<String>,
-)
+
+    )
+

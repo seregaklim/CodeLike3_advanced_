@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.installations.FirebaseInstallations
@@ -16,7 +15,11 @@ import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.auth.AuthState
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.token
+
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
     private val viewModel: AuthViewModel by viewModels()
@@ -113,18 +116,20 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.signin -> {
-                AppAuth.getInstance().setAuth(5, "x-token")
+                AppAuth.getInstance().setAuth(id = token.id, token=token.token )
+
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragment_enter)
 
                 true
             }
             R.id.signup -> {
-                AppAuth.getInstance().setAuth(5, "x-token")
-
+              //  AppAuth.getInstance().setAuth(user.id,token.id )
+                AppAuth.getInstance().setAuth(id = token.id, token=token.token )
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragment_registration,)
 

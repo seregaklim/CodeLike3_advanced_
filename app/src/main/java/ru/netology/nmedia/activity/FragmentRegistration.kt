@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.FragmentRegistrationBinding
 import ru.netology.nmedia.model.ActionType
@@ -44,27 +45,23 @@ class FragmentRegistration: Fragment() {
         )
 
         binding.register.setOnClickListener {
+            AndroidUtils.hideKeyboard(requireView())
 
+            authViewModel.registerUser(
+                binding.login.text.toString(), binding.name.text.toString(), binding.pass.text.toString()
+            )
 
+            authViewModel.data.observe(viewLifecycleOwner) {authState ->
+               if (authState.id != 0L) {
 
-                AndroidUtils.hideKeyboard(requireView())
-
-                authViewModel.registerUser(
-                    binding.login.toString(), binding.name.toString(), binding.pass.toString()
-                )
-
-                authViewModel.data.observe(viewLifecycleOwner) { authState ->
-                    if (authState.id != 0L) {
-                        findNavController().navigateUp()
-                    }
+                    findNavController().navigateUp()
                 }
-
-    }
-
-        authViewModel.error.observe(viewLifecycleOwner) { error ->
-            Snackbar.make(
-                binding.root,
-                "${getString(R.string.error_loading)}: ${error.message}",
+            }
+        }
+                authViewModel.error.observe(viewLifecycleOwner) { error ->
+                    Snackbar.make(
+                        binding.root,
+                        "${getString(R.string.error_loading)}: ${error.message}",
 
                 Snackbar.LENGTH_INDEFINITE
             ).apply {

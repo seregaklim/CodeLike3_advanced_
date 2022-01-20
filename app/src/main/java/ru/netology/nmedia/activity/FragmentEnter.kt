@@ -48,7 +48,7 @@ class FragmentEnter : Fragment() {
         binding.enter.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 
-            authViewModel.loginUser(binding.login.toString(), binding.pass.toString())
+            authViewModel.loginUser(binding.login.text.toString(), binding.pass.text.toString())
 
             authViewModel.data.observe(viewLifecycleOwner) { authState ->
                 if (authState.id != 0L) {

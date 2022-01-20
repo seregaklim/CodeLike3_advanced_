@@ -14,10 +14,10 @@ import okio.IOException
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.dto.PushToken
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.error.UnknownError
-
 
 class AppAuth private constructor(context: Context) {
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
@@ -57,7 +57,7 @@ class AppAuth private constructor(context: Context) {
         }
         sendPushToken()
     }
-//При изменении аутентификации
+    //При изменении аутентификации
     @Synchronized
     fun removeAuth() {
         _authStateFlow.value = AuthState()
@@ -67,7 +67,7 @@ class AppAuth private constructor(context: Context) {
         }
         sendPushToken()
     }
-// при старте приложения токена может не быть, либо он может поменяться в процессе работы, и мы его получим уже в FCMService
+    // при старте приложения токена может не быть, либо он может поменяться в процессе работы, и мы его получим уже в FCMService
 //  на Dispatchers.Default ждём получения токена и, если успешно его получаем, отправляем на сервер.
     fun sendPushToken(token: String? = null) {
         CoroutineScope(Dispatchers.Default).launch {
@@ -87,7 +87,9 @@ class AppAuth private constructor(context: Context) {
         fun getInstance(): AppAuth = synchronized(this) {
             instance ?: throw IllegalStateException(
                 "AppAuth is not initialized, you must call AppAuth.initializeApp(Context context) first."
+
             )
+
         }
 
         fun initApp(context: Context): AppAuth = instance ?: synchronized(this) {
@@ -96,10 +98,6 @@ class AppAuth private constructor(context: Context) {
 
         private fun buildAuth(context: Context): AppAuth = AppAuth(context)
     }
-
-
-
-
 
 }
 
