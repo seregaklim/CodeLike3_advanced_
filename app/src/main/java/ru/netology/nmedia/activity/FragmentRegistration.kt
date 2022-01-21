@@ -58,37 +58,11 @@ class FragmentRegistration: Fragment() {
             AndroidUtils.hideKeyboard(requireView())
 
             authViewModel.registerUser(
-                binding.login.text.toString(), binding.name.text.toString(), binding.pass.text.toString()
+                login=binding.login.text.toString(),name= binding.name.text.toString(),pass= binding.pass.text.toString()
+
+
             )
         }
-
-
-
-
-
-
-
-
-
-
-
-//        authViewModel.data.observe(viewLifecycleOwner) {authState ->
-//        binding.register.setOnClickListener {
-//            AndroidUtils.hideKeyboard(requireView())
-//
-//            AppAuth.getInstance().setAuth(token.id, token.token )
-//
-//            authViewModel.registerUser(
-//                binding.login.text.toString(), binding.name.text.toString(), binding.pass.text.toString()
-//            )
-//
-//               if (authState.id != 0L) {
-//                   findNavController().navigateUp()
-//                }
-//            }
-//        }
-
-
 
         authViewModel.error.observe(viewLifecycleOwner) { error ->
                     Snackbar.make(
@@ -100,10 +74,12 @@ class FragmentRegistration: Fragment() {
                 setAction(R.string.retry_loading) {
                     when (error.action) {
                         ActionType.RegisterUser ->authViewModel.registerUser(
-                            binding.name.toString(),
-                            binding.login.toString(),
-                            binding.pass.toString()
-                        )
+
+                        login = binding.login.toString(),
+                        name = binding.name.toString(),
+                            pass = binding.pass.toString(),
+                    )
+
                     }
                 }
                 show()

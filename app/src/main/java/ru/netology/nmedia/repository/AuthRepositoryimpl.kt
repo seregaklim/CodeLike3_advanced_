@@ -23,9 +23,6 @@ class AuthRepositoryimpl():AuthRepository {
 
     override  suspend fun  loginUser( login: String,  pass: String):Token {
         try {
-
-                authState.copy(id = token.id, token=token.token )
-
             val response = Api.service. loginUser(login,pass)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -39,12 +36,11 @@ class AuthRepositoryimpl():AuthRepository {
         }
     }
 
-   override suspend fun registerUser ( login: String, pass: String, name: String):Token {
+   override suspend fun registerUser ( login: String, name: String, pass: String,):Token {
     try {
 
-           authState.copy(id = token.id, token=token.token )
+        val response = Api.service.registerUser(login,name,pass)
 
-           val response = Api.service.registerUser(login,pass,name)
            if (!response.isSuccessful) {
                throw ApiError(response.code(), response.message())
            }

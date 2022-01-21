@@ -37,15 +37,15 @@ private val empty = Post(
     )
 )
 
- val token = Token(
-    id =0,
-    token = "",
-    avatar= "" ,
-)
- val authState = AuthState(
-id = 0,
-token = ""
-    )
+// val token = Token(
+//    id =0,
+//    token = "",
+//    avatar= "" ,
+//)
+// val authState = AuthState(
+//id = 0,
+//token = ""
+//    )
 
 @ExperimentalCoroutinesApi
 class PostViewModel(application: Application) : AndroidViewModel(application) {

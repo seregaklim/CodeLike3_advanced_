@@ -56,7 +56,7 @@ class FragmentEnter : Fragment() {
         binding.enter.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 
-            authViewModel.loginUser(binding.login.text.toString(), binding.pass.text.toString())
+            authViewModel.loginUser(login = binding.login.text.toString(),pass= binding.pass.text.toString())
 
         }
 
@@ -69,7 +69,9 @@ class FragmentEnter : Fragment() {
             ).apply {
                 setAction(R.string.retry_loading) {
                     when (error.action) {
-                        ActionType.LoginUser ->authViewModel.loginUser(binding.login.toString(), binding.pass.toString())
+                        ActionType.LoginUser ->
+                            authViewModel.loginUser(login = binding.login.toString(),
+                              pass=binding.pass.toString())
 
                     }
                 }

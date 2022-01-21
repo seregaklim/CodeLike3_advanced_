@@ -73,6 +73,7 @@ interface ApiService {
     @POST("media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
+   // "users/authentication"
     @FormUrlEncoded
     @POST("users/authentication")
     suspend fun  loginUser(
@@ -82,7 +83,7 @@ interface ApiService {
 
 
 
-
+    //"users/registration"
     @FormUrlEncoded
    @POST("users/registration")
     suspend fun registerUser(@Field("login") login: String,

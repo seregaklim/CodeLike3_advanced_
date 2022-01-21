@@ -9,6 +9,6 @@ interface  AuthRepository {
 
     suspend fun  loginUser(login: String, pass: String):Token
 
-    suspend fun registerUser(login: String, pass: String, name: String):Token
+    suspend fun registerUser(login: String , name: String,pass: String):Token
 
 }

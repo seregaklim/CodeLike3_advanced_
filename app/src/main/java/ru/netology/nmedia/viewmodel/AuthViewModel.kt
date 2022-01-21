@@ -12,12 +12,21 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AppAuth.Companion.getInstance
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.db.AppDb
+import ru.netology.nmedia.dto.Token
 import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.AuthRepository
 import ru.netology.nmedia.repository.AuthRepositoryimpl
 import ru.netology.nmedia.util.SingleLiveEvent
 
-
+val token = Token(
+    id =0,
+    token = "",
+    avatar= "" ,
+)
+val authState = AuthState(
+    id = 0,
+    token = ""
+)
 @ExperimentalCoroutinesApi
 class AuthViewModel(application: Application) : AndroidViewModel(application){
 
@@ -40,25 +49,29 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    fun  loginUser(login:String, pass:String) = viewModelScope.launch {
 
+    fun loginUser(login: String, pass: String) = viewModelScope.launch {
         try {
-            repository. loginUser(login,pass)
-            AppAuth.getInstance().setAuth(token.id, token.token )
-         } catch (e: Exception) {
-             _error.postValue(ErrorModel(ErrorType.AppError, ActionType.LoginUser, e.message ?: ""))
-         }
-     }
+            val token = repository.loginUser(login, pass)
+            AppAuth.getInstance().setAuth(token.id, token.token)
+        } catch (e: Exception) {
+            _error.postValue(ErrorModel(ErrorType.AppError, ActionType.LoginUser, e.message ?: ""))
+        }
+    }
 
-      fun registerUser(login: String, pass: String, name: String) = viewModelScope.launch {
 
-          try {
-              repository.registerUser(login,pass,name)
-              AppAuth.getInstance().setAuth(token.id, token.token )
-          } catch (e: Exception) {
-              _error.postValue(ErrorModel(ErrorType.AppError, ActionType.RegisterUser, e.message ?: ""))
-          }
-      }
-  }
+    fun registerUser (login: String,name : String, pass: String) = viewModelScope.launch {
+        try {
+            val token = repository.registerUser(login,name, pass)
+            AppAuth.getInstance().setAuth(token.id, token.token)
+        } catch (e: Exception) {
+            _error.postValue(ErrorModel(ErrorType.AppError, ActionType.LoginUser, e.message ?: ""))
+        }
+    }
+
+    }
+
+
+
 
 
