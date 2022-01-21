@@ -87,13 +87,9 @@ interface ApiService {
     @FormUrlEncoded
    @POST("users/registration")
     suspend fun registerUser(@Field("login") login: String,
-                             @Field("pass") pass: String,
-                             @Field("name") name: String): Response<Token>
+                             @Field("name") name: String,
+                             @Field("pass") pass: String, ): Response<Token>
 
-
-
-
-    
 }
 object Api {
     val service: ApiService by lazy {

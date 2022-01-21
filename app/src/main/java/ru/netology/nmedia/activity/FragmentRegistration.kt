@@ -33,7 +33,6 @@ class FragmentRegistration: Fragment() {
 
     private var fragmentBinding: FragmentRegistration? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,17 +56,25 @@ class FragmentRegistration: Fragment() {
         binding.register.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 
-            authViewModel.registerUser(
-                login=binding.login.text.toString(),name= binding.name.text.toString(),pass= binding.pass.text.toString()
+            val login = binding.login.text.toString()
+            val name = binding.name.text.toString()
+            val pass = binding.pass.text.toString()
+            val pass2 = binding.pass2.text.toString()
 
-
+            if (pass == pass2)
+                authViewModel.registerUser(login, name, pass)
+            else Snackbar.make(
+                binding.root,
+                "${getString(R.string.password_does_not_match)}",
+                Snackbar.LENGTH_INDEFINITE
             )
-        }
+                .show()
 
+        }
         authViewModel.error.observe(viewLifecycleOwner) { error ->
-                    Snackbar.make(
-                        binding.root,
-                        "${getString(R.string.error_loading)}: ${error.message}",
+            Snackbar.make(
+                binding.root,
+                "${getString(R.string.error_loading)}: ${error.message}",
 
                 Snackbar.LENGTH_INDEFINITE
             ).apply {
@@ -75,10 +82,10 @@ class FragmentRegistration: Fragment() {
                     when (error.action) {
                         ActionType.RegisterUser ->authViewModel.registerUser(
 
-                        login = binding.login.toString(),
-                        name = binding.name.toString(),
+                            login = binding.login.toString(),
+                            name = binding.name.toString(),
                             pass = binding.pass.toString(),
-                    )
+                        )
 
                     }
                 }

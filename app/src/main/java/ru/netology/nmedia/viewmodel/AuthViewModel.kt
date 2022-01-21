@@ -52,6 +52,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
 
     fun loginUser(login: String, pass: String) = viewModelScope.launch {
         try {
+            //(token) сохранить данные, которые с сервера пришли
             val token = repository.loginUser(login, pass)
             getInstance().setAuth(token.id, token.token)
         } catch (e: Exception) {
@@ -62,6 +63,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
 
     fun registerUser (login: String,name : String, pass: String) = viewModelScope.launch {
         try {
+            //(token) сохранить данные, которые с сервера пришли
             val token = repository.registerUser(login,name, pass)
            getInstance().setAuth(token.id, token.token)
         } catch (e: Exception) {
