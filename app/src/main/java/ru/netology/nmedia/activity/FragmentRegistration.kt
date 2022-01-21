@@ -18,6 +18,7 @@ import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.token
 
 class FragmentRegistration: Fragment() {
 
@@ -44,21 +45,52 @@ class FragmentRegistration: Fragment() {
             false
         )
 
+
+        authViewModel.data.observe(viewLifecycleOwner) {authState ->
+            if (authState.id != 0L) {
+
+                findNavController().navigateUp()
+            }
+        }
+
+
         binding.register.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 
             authViewModel.registerUser(
                 binding.login.text.toString(), binding.name.text.toString(), binding.pass.text.toString()
             )
-
-            authViewModel.data.observe(viewLifecycleOwner) {authState ->
-               if (authState.id != 0L) {
-
-                    findNavController().navigateUp()
-                }
-            }
         }
-                authViewModel.error.observe(viewLifecycleOwner) { error ->
+
+
+
+
+
+
+
+
+
+
+
+//        authViewModel.data.observe(viewLifecycleOwner) {authState ->
+//        binding.register.setOnClickListener {
+//            AndroidUtils.hideKeyboard(requireView())
+//
+//            AppAuth.getInstance().setAuth(token.id, token.token )
+//
+//            authViewModel.registerUser(
+//                binding.login.text.toString(), binding.name.text.toString(), binding.pass.text.toString()
+//            )
+//
+//               if (authState.id != 0L) {
+//                   findNavController().navigateUp()
+//                }
+//            }
+//        }
+
+
+
+        authViewModel.error.observe(viewLifecycleOwner) { error ->
                     Snackbar.make(
                         binding.root,
                         "${getString(R.string.error_loading)}: ${error.message}",

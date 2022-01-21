@@ -43,18 +43,18 @@ class AuthViewModel(application: Application) : AndroidViewModel(application){
     fun  loginUser(login:String, pass:String) = viewModelScope.launch {
 
         try {
-             repository. loginUser(login,pass)
+            repository. loginUser(login,pass)
+            AppAuth.getInstance().setAuth(token.id, token.token )
          } catch (e: Exception) {
              _error.postValue(ErrorModel(ErrorType.AppError, ActionType.LoginUser, e.message ?: ""))
          }
      }
 
-      fun registerUser(login: String,
-                              pass: String,
-                              name: String) = viewModelScope.launch {
+      fun registerUser(login: String, pass: String, name: String) = viewModelScope.launch {
 
           try {
               repository.registerUser(login,pass,name)
+              AppAuth.getInstance().setAuth(token.id, token.token )
           } catch (e: Exception) {
               _error.postValue(ErrorModel(ErrorType.AppError, ActionType.RegisterUser, e.message ?: ""))
           }

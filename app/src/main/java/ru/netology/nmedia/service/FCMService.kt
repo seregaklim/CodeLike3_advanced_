@@ -23,8 +23,6 @@ import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dto.PushToken
 import kotlin.random.Random
 
-
-
 class FCMService : FirebaseMessagingService() {
     private val action = "action"
     private val content = "content"
@@ -88,12 +86,19 @@ class FCMService : FirebaseMessagingService() {
 
         val recipientId :String?= message.data["recipientId"] // тут получаем ид для кого пуш
 
+
+//        recipientId = тому, что в AppAuth, то всё ok, показываете Notification,
+//        recipientId = null, то это массовая рассылка,
         if(recipientId?.toLong() == authState.id||recipientId == null )
             message.data[action]?.let { when (Action.valueOf(it)) {
                 Action.RECIPIENTID-> handleRecipientId(gson.fromJson(
                     message.data[content], RecipientId::class.java))
             }
 
+//                если recipientId = 0 (и не равен вашему),
+//                значит сервер считает, что у вас анонимная аутентификация и вам нужно переотправить свой push token;
+//                если recipientId != 0 (и не равен вашему),
+//                значит сервер считает, что на вашем устройстве другая аутентификация и вам нужно переотправить свой push token;
                 if ( recipientId == null  &&  recipientId?.toLong() != authState.id
                     || recipientId !=null &&  recipientId?.toLong() !=authState.id)
                     CoroutineScope(Dispatchers.Default).launch {

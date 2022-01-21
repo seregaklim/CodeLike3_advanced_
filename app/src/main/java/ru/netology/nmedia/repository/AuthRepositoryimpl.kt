@@ -25,7 +25,7 @@ class AuthRepositoryimpl():AuthRepository {
         try {
 
                 authState.copy(id = token.id, token=token.token )
-            AppAuth.getInstance().setAuth(id = token.id, token=token.token )
+
             val response = Api.service. loginUser(login,pass)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -41,8 +41,9 @@ class AuthRepositoryimpl():AuthRepository {
 
    override suspend fun registerUser ( login: String, pass: String, name: String):Token {
     try {
-        AppAuth.getInstance().setAuth(id = token.id, token=token.token )
+
            authState.copy(id = token.id, token=token.token )
+
            val response = Api.service.registerUser(login,pass,name)
            if (!response.isSuccessful) {
                throw ApiError(response.code(), response.message())

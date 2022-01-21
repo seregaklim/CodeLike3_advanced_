@@ -120,7 +120,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.signin -> {
-                AppAuth.getInstance().setAuth(id = token.id, token=token.token )
 
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragment_enter)
@@ -128,8 +127,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 true
             }
             R.id.signup -> {
-              //  AppAuth.getInstance().setAuth(user.id,token.id )
-                AppAuth.getInstance().setAuth(id = token.id, token=token.token )
+
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragment_registration,)
 

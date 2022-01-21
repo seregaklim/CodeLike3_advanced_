@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.FragmentEnterBinding
 import ru.netology.nmedia.dto.Attachment
@@ -19,6 +20,7 @@ import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.token
 
 class FragmentEnter : Fragment() {
 
@@ -45,16 +47,17 @@ class FragmentEnter : Fragment() {
             false
         )
 
+        authViewModel.data.observe(viewLifecycleOwner) { authState ->
+            if (authState.id != 0L) {
+
+                findNavController().navigateUp()
+            }
+        }
         binding.enter.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 
             authViewModel.loginUser(binding.login.text.toString(), binding.pass.text.toString())
 
-            authViewModel.data.observe(viewLifecycleOwner) { authState ->
-                if (authState.id != 0L) {
-                    findNavController().navigateUp()
-                }
-            }
         }
 
         authViewModel.error.observe(viewLifecycleOwner) { error ->
@@ -202,13 +205,3 @@ class FragmentEnter : Fragment() {
 //                }
 //
 //            }
-//
-//        }
-//
-//        return binding.root
-//    }
-//}
-
-
-
-

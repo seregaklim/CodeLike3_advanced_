@@ -65,7 +65,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             repository.data
                 .map { posts ->
                     FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId)
+                       posts.map { it.copy(ownedByMe = it.authorId == myId)
 
                         },
 
