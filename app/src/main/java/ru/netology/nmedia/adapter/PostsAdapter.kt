@@ -103,6 +103,11 @@ class PostViewHolder(
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+
+            photoContainer.setOnClickListener {
+                onInteractionListener.pushPhoto(post)
+            }
+
         }
     }
 }
