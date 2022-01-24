@@ -1,5 +1,6 @@
 package ru.netology.nmedia.activity
 
+import EditPostFragment.Companion.textArg
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,9 +46,15 @@ class FeedFragment : Fragment() {
         val adapter = PostsAdapter(
             object : OnInteractionListener {
 
+
                 override fun onEdit(post: Post) {
                     authViewModel.data.observe(viewLifecycleOwner) { authState ->
                         if (authState.id != 0L) {
+
+                            viewModel.edit(post)
+                            findNavController().navigate(R.id.action_action_feedFragment_to_editPostFragment,
+                                Bundle().apply { textArg = post.content })
+
                         } else {
 
                             Snackbar.make(
@@ -59,6 +66,7 @@ class FeedFragment : Fragment() {
                         }
                     }
                 }
+
 
                 override fun pushPhoto(post: Post) {
 

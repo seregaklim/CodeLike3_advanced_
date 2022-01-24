@@ -1,15 +1,18 @@
 package ru.netology.nmedia.activity
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.AndroidUtils
@@ -78,7 +81,10 @@ class NewPostFragment : Fragment() {
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
-                    Activity.RESULT_OK -> viewModel.changePhoto(it.data?.data)
+                    Activity.RESULT_OK -> {
+                        val uri: Uri? = it.data?.data
+                        viewModel.changePhoto(uri, uri?.toFile())
+                    }
                 }
             }
 
@@ -105,7 +111,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.removePhoto.setOnClickListener {
-            viewModel.changePhoto(null)
+            viewModel.changePhoto(null, null)
         }
 
         viewModel.postCreated.observe(viewLifecycleOwner) {

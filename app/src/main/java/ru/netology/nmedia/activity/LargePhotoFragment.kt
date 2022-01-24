@@ -14,6 +14,7 @@ import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.util.StringArg
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class LargePhotoFragment: Fragment() {
@@ -25,6 +26,11 @@ class LargePhotoFragment: Fragment() {
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private val authViewModel: AuthViewModel by viewModels(
+        ownerProducer = ::requireParentFragment
+    )
+
     private var fragmentBinding: FragmentLargePhotoBinding? = null
 
     override fun onCreateView(
