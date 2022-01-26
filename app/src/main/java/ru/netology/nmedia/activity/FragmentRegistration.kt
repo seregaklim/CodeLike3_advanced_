@@ -31,6 +31,7 @@ class FragmentRegistration: Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+
     private var fragmentBinding: FragmentRegistration? = null
 
     override fun onCreateView(
@@ -38,7 +39,7 @@ class FragmentRegistration: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentRegistrationBinding.inflate(
+        val binding = ru.netology.nmedia.databinding.FragmentRegistrationBinding.inflate(
             inflater,
             container,
             false

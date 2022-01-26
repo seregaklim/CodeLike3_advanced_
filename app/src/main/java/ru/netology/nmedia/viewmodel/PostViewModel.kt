@@ -152,9 +152,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         _photo.value = noPhoto
     }
 
-    fun edit(post: Post) {
+    fun edit(post: Post){
         edited.value = post
-    }
+
+        }
 
     fun changeContent(content: String) {
         val text = content.trim()

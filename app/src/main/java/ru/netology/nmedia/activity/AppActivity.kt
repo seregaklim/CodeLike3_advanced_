@@ -15,10 +15,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.auth.AuthState
-import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.viewmodel.AuthViewModel
-import ru.netology.nmedia.viewmodel.token
 
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
@@ -41,15 +38,15 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             intent.removeExtra(Intent.EXTRA_TEXT)
             findNavController(R.id.nav_host_fragment)
                 .navigate(
+                    R.id.action_feedFragment_to_fragmentEditPost,
+                    Bundle().apply {
+                        textArg = text
+                    }
+                )
+
+            findNavController(R.id.nav_host_fragment)
+                .navigate(
                     R.id.action_feedFragment_to_newPostFragment,
-                    Bundle().apply {
-                        textArg = text
-                    }
-                )
-
-            findNavController(R.id.nav_host_fragment)
-                .navigate(
-                    R.id.action_feedFragment_to_largePhotoFragment,
 
                     Bundle().apply {
                         textArg = text
@@ -59,7 +56,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
             findNavController(R.id.nav_host_fragment)
                 .navigate(
-                    R.id.action_feedFragment_to_fragment_enter,
+                    R.id.action_feedFragment_to_fragmentEnter,
 
                     Bundle().apply {
                         textArg = text
@@ -69,7 +66,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
             findNavController(R.id.nav_host_fragment)
                 .navigate(
-                    R.id.action_feedFragment_to_fragment_registration,
+                    R.id.action_feedFragment_to_fragmentRegistration,
 
                     Bundle().apply {
                         textArg = text
@@ -78,10 +75,12 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
             intent.removeExtra(Intent.EXTRA_TEXT)
             findNavController(R.id.nav_host_fragment).navigate(
-                R.id.action_action_feedFragment_to_editPostFragment,
+                R.id.action_feedFragment_to_fragmentLargePhoto,
                 Bundle().apply {
                     textArg = text }
             )
+
+
 
         }
 
@@ -129,14 +128,14 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             R.id.signin -> {
 
                 findNavController(R.id.nav_host_fragment)
-                    .navigate(R.id.action_feedFragment_to_fragment_enter)
+                    .navigate(R.id.action_feedFragment_to_fragmentEnter)
 
                 true
             }
             R.id.signup -> {
 
                 findNavController(R.id.nav_host_fragment)
-                    .navigate(R.id.action_feedFragment_to_fragment_registration,)
+                    .navigate(R.id.action_feedFragment_to_fragmentRegistration)
 
                 true
             }
@@ -168,5 +167,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             println(it)
         }
     }
+
+
+
 }
 

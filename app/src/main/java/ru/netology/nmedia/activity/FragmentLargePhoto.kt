@@ -1,50 +1,42 @@
+package ru.netology.nmedia.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentLargePhotoBinding
-import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.util.StringArg
-import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import androidx.fragment.app.viewModels
+import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.enumeration.AttachmentType
+import ru.netology.nmedia.viewmodel.AuthViewModel
 
-class LargePhotoFragment: Fragment() {
 
-    companion object {
-        var Bundle.textArg: String? by StringArg
-    }
+class FragmentLargePhoto: Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
-
-    private val authViewModel: AuthViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
-
-    private var fragmentBinding: FragmentLargePhotoBinding? = null
+//    companion object {
+//        var Bundle.textArg: String? by StringArg
+//    }
+//
+    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentLargePhotoBinding.inflate(
+        val binding = ru.netology.nmedia.databinding.FragmentLargePhotoBinding.inflate(
             inflater,
             container,
             false
         )
 
-        val post = Post(
+        val post =  Post(
             id = 0,
             content = "",
             author = "",
@@ -59,6 +51,7 @@ class LargePhotoFragment: Fragment() {
                 type = AttachmentType.IMAGE
             )
         )
+
 
         arguments?.getString("likes")
             ?.let(binding.like::setText)
@@ -109,5 +102,3 @@ class LargePhotoFragment: Fragment() {
         return binding.root
     }
 }
-
-
