@@ -1,6 +1,7 @@
 
 package ru.netology.nmedia.adapter
 
+import Wallsevice
 import android.net.Uri
 import android.net.Uri.parse
 import android.os.Bundle
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
+import ru.netology.nmedia.api.Api.service
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
@@ -49,14 +51,21 @@ class PostViewHolder(
     private val onInteractionListener: OnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    val service = Wallsevice()
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
             published.text = post.published.toString()
             content.text = post.content
             avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
+//            like.isChecked = post.likedByMe
+//            like.text = "${post.likes}"
             like.isChecked = post.likedByMe
-            like.text = "${post.likes}"
+            like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+
+//            share.isChecked
+//            share.text = "${service.zeroingOutShare(post.share.toLong())}"
+
             photo.setImageURI(Uri.parse( "${BuildConfig.BASE_URL}/attachment/моя_картинка.jpg"))
 
             photo.isVisible = post.attachment != null

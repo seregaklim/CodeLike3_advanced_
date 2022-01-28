@@ -1,4 +1,5 @@
 package ru.netology.nmedia.activity
+import Wallsevice
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.viewmodel.AuthViewModel
@@ -19,10 +21,8 @@ import ru.netology.nmedia.viewmodel.AuthViewModel
 
 class FragmentLargePhoto: Fragment() {
 
-//    companion object {
-//        var Bundle.textArg: String? by StringArg
-//    }
-//
+
+
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
 
     override fun onCreateView(
@@ -56,12 +56,16 @@ class FragmentLargePhoto: Fragment() {
         arguments?.getString("likes")
             ?.let(binding.like::setText)
 
+        arguments?.getString("likes")
 
+
+        val service = Wallsevice()
         binding.apply {
             post.likedByMe = arguments?.getBoolean("likedByMeTrue") == true
             like.text =arguments?.getString("likes")
-            like.isChecked =post.likedByMe
 
+            like.isChecked = post.likedByMe
+            like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
             post.attachment?.let {
 
                 Log.d("MyLog", "${BuildConfig.BASE_URL}/media/${it.url}")
@@ -71,16 +75,16 @@ class FragmentLargePhoto: Fragment() {
                     .timeout(10_000)
                     .into(photo)
 
-                like.setOnClickListener {
 
+                binding.like.setOnClickListener {
 
                     if (post.likedByMe) {
                         viewModel.unlikeById(it.id.toLong())
                     } else {
                         viewModel.likeById(it.id.toLong())
                     }
-
                 }
+
 
                 binding.share.setOnClickListener {
 

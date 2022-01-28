@@ -46,7 +46,7 @@ class FragmentRegistration: Fragment() {
         )
 
 
-        authViewModel.data.observe(viewLifecycleOwner) {authState ->
+        authViewModel.data.observe(viewLifecycleOwner) { authState ->
             if (authState.id != 0L) {
 
                 findNavController().navigateUp()

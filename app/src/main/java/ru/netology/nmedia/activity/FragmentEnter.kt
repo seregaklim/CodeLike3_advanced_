@@ -47,12 +47,14 @@ class FragmentEnter : Fragment() {
             false
         )
 
+
         authViewModel.data.observe(viewLifecycleOwner) { authState ->
             if (authState.id != 0L) {
 
                 findNavController().navigateUp()
             }
         }
+
         binding.enter.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
 

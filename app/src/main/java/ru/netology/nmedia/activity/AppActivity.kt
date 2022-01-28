@@ -25,6 +25,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         super.onCreate(savedInstanceState)
 
 
+
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
                 return@let
@@ -118,6 +119,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         menu.let {
             it.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
             it.setGroupVisible(R.id.authenticated, viewModel.authenticated)
+
         }
         return true
     }

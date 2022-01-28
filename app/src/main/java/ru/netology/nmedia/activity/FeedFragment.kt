@@ -40,8 +40,7 @@ class FeedFragment : Fragment() {
 
 
                 override fun onEdit(post: Post) {
-                    authViewModel.data.observe(viewLifecycleOwner) { authState ->
-                        if (authState.id != 0L) {
+                    if (authViewModel.authenticated) {
                     viewModel.edit(post)
                     findNavController().navigate(R.id.action_feedFragment_to_fragmentEditPost, Bundle().apply { textArg = post.content })
 
@@ -55,13 +54,10 @@ class FeedFragment : Fragment() {
                                 .show()
                         }
                     }
-                }
-
 
                 override fun pushPhoto(post: Post) {
 
-                    authViewModel.data.observe(viewLifecycleOwner) { authState ->
-                        if (authState.id != 0L) {
+                    if (authViewModel.authenticated) {
 
 
                             findNavController().navigate(R.id.action_feedFragment_to_fragmentLargePhoto,
@@ -90,11 +86,10 @@ class FeedFragment : Fragment() {
                             )
                                 .show()
                         }
-                    }  }
+                    }
 
                 override fun onLike(post: Post) {
-                    authViewModel.data.observe(viewLifecycleOwner) { authState ->
-                        if (authState.id != 0L) {
+                    if (authViewModel.authenticated) {
                             if (post.likedByMe) {
                                 viewModel.unlikeById(post.id)
                             } else {
@@ -110,7 +105,7 @@ class FeedFragment : Fragment() {
                                 .show()
                         }
                     }
-                }
+
                 override fun onRemove(post: Post) {
                     viewModel.removeById(post.id)
                 }
@@ -200,8 +195,7 @@ class FeedFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener {
-            authViewModel.data.observe(viewLifecycleOwner) { authState ->
-                if (authState.id != 0L) {
+            if (authViewModel.authenticated) {
                     findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
                 } else {
 
@@ -213,7 +207,7 @@ class FeedFragment : Fragment() {
                         .show()
                 }
             }
-        }
+
         binding.newer.setOnClickListener {
 
             viewModel.refreshPosts()
