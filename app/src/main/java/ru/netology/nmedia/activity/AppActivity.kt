@@ -113,37 +113,62 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         menu.let {
-            it.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
-            it.setGroupVisible(R.id.authenticated, viewModel.authenticated)
 
+            if (findNavController(R.id.nav_host_fragment).currentDestination?.getId() == R.id.feedFragment) {
+
+                it.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
+                it.setGroupVisible(R.id.authenticated, viewModel.authenticated)
+
+            } else {
+
+                it.setGroupVisible(
+                    R.id.unauthenticated,
+                    findNavController(R.id.nav_host_fragment).currentDestination?.getId() == R.id.feedFragment
+                            && !viewModel.authenticated
+                )
+
+                it.setGroupVisible(
+                    R.id.authenticated,
+                    findNavController(R.id.nav_host_fragment).currentDestination?.getId() == R.id.feedFragment
+                            && viewModel.authenticated
+                )
+
+                it.setGroupVisible(R.id.authenticated, !viewModel.authenticated)
+
+            }
+            return true
         }
-        return true
-    }
 
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.signin -> {
-
+               //вызова перехода у активити
+                invalidateOptionsMenu()
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragmentEnter)
 
                 true
             }
             R.id.signup -> {
-
+               //вызова перехода у активити
+                invalidateOptionsMenu()
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragmentRegistration)
 
                 true
             }
             R.id.signout -> {
+                //вызова перехода у активити
+                invalidateOptionsMenu()
 
-              findNavController(R.id.nav_host_fragment).navigateUp()
+                findNavController(R.id.nav_host_fragment).navigateUp()
                 AppAuth.getInstance().removeAuth()
               true
             }
