@@ -3,8 +3,6 @@ package ru.netology.nmedia.adapter
 
 import Wallsevice
 import android.net.Uri
-import android.net.Uri.parse
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
-import ru.netology.nmedia.api.Api.service
-import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.view.loadCircleCrop
