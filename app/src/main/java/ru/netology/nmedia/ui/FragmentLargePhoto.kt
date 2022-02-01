@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.BuildConfig
@@ -14,13 +15,18 @@ import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.enumeration.AttachmentType
+import ru.netology.nmedia.model.ActionType
+import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.viewmodel.AuthViewModel
 
 
-class FragmentLargePhoto: Fragment() {
 
+
+class FragmentLargePhoto: Fragment() {
 
 
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
@@ -30,7 +36,7 @@ class FragmentLargePhoto: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = ru.netology.nmedia.databinding.FragmentLargePhotoBinding.inflate(
+        val binding = FragmentLargePhotoBinding.inflate(
             inflater,
             container,
             false
@@ -51,40 +57,52 @@ class FragmentLargePhoto: Fragment() {
                 type = AttachmentType.IMAGE
             )
         )
+//        val service = Wallsevice()
+//        viewModel.data.observe(viewLifecycleOwner) { it ->
+//            binding.apply {
+//                like.isChecked = post.likedByMe
+//                like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+//            }
+//        }
 
 
-        arguments?.getString("likes")
-            ?.let(binding.like::setText)
 
-        arguments?.getString("likes")
-
-
-        val service = Wallsevice()
         binding.apply {
-            post.likedByMe = arguments?.getBoolean("likedByMeTrue") == true
-            like.text =arguments?.getString("likes")
 
-            like.isChecked = post.likedByMe
-            like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
             post.attachment?.let {
 
                 Log.d("MyLog", "${BuildConfig.BASE_URL}/media/${it.url}")
 
                 Glide.with(photo)
-                    .load(  arguments?.getString("url"))
+                    .load(arguments?.getString("url"))
                     .timeout(10_000)
                     .into(photo)
+            }
+
+            viewModel.data.observe(viewLifecycleOwner) {posts->
+
+                arguments?.getString("likes")
+                    ?.let(binding.like::setText)
+            }
+            viewModel.data.observe(viewLifecycleOwner) {posts:FeedModel ->
+
+
+                post.likedByMe = arguments?.getBoolean("likedByMeTrue") == true
+                like.isChecked =  post.likedByMe
+            }
+
 
 
                 binding.like.setOnClickListener {
+                    viewModel.data.observe(viewLifecycleOwner) {it->
 
-                    if (post.likedByMe) {
-                        viewModel.unlikeById(it.id.toLong())
-                    } else {
-                        viewModel.likeById(it.id.toLong())
+                            if (post.likedByMe) {
+                                viewModel.unlikeById(post.id.toLong())
+                            } else {
+                                viewModel.likeById(post.id.toLong())
+                            }
+                        }
                     }
-                }
-
 
                 binding.share.setOnClickListener {
 
@@ -99,9 +117,26 @@ class FragmentLargePhoto: Fragment() {
                     startActivity(shareIntent)
                 }
 
+
+            viewModel.error.observe(viewLifecycleOwner) { error ->
+                Snackbar.make(
+                    binding.root,
+                    "${getString(R.string.error_loading)}: ${error.message}",
+
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(R.string.retry_loading) {
+                        when (error.action) {
+
+                            ActionType.Like -> viewModel.likeById(id.toLong())
+                            ActionType.unlikeById -> viewModel.unlikeById(id.toLong())
+                        }
+                    }
+                    show()
+                }
             }
 
-        }
+            }
 
         return binding.root
     }
