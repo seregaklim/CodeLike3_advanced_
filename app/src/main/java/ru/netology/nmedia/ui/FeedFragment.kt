@@ -1,30 +1,39 @@
+
+package ru.netology.nmedia.ui
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.FragmentEditPost.Companion.textArg
+import ru.netology.nmedia.activity.FragmentEnter.Companion.textArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FeedFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
-
+    private val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+    )
     private val authViewModel: AuthViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
+        ownerProducer = ::requireParentFragment,
     )
 
     override fun onCreateView(
@@ -41,70 +50,71 @@ class FeedFragment : Fragment() {
 
                 override fun onEdit(post: Post) {
                     if (authViewModel.authenticated) {
-                    viewModel.edit(post)
-                    findNavController().navigate(R.id.action_feedFragment_to_fragmentEditPost, Bundle().apply { textArg = post.content })
+                        viewModel.edit(post)
+                        findNavController().navigate(R.id.action_feedFragment_to_fragmentEditPost,
+                            Bundle().apply { textArg = post.content })
 
-                        } else {
+                    } else {
 
-                            Snackbar.make(
-                                binding.root,
-                                "${getString(R.string.registered_users)}",
-                                Snackbar.LENGTH_INDEFINITE
-                            )
-                                .show()
-                        }
+                        Snackbar.make(
+                            binding.root,
+                            "${getString(R.string.registered_users)}",
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                            .show()
                     }
+                }
 
                 override fun pushPhoto(post: Post) {
 
                     if (authViewModel.authenticated) {
 
 
-                            findNavController().navigate(R.id.action_feedFragment_to_fragmentLargePhoto,
-                                Bundle().apply {
+                        findNavController().navigate(R.id.action_feedFragment_to_fragmentLargePhoto,
+                            Bundle().apply {
 
-                                    post.attachment?.let {
+                                post.attachment?.let {
 
-                                        putString("url", "${BuildConfig.BASE_URL}/media/${it.url}")
-                                        putString("likes", "${post.likes}")
-                                        if (post.likedByMe) {
-                                            putBoolean("likedByMeTrue", true)
-                                        } else {
+                                    putString("url", "${BuildConfig.BASE_URL}/media/${it.url}")
+                                    putString("likes", "${post.likes}")
+                                    if (post.likedByMe) {
+                                        putBoolean("likedByMeTrue", true)
+                                    } else {
 
-                                        }
                                     }
                                 }
-                            )
+                            }
+                        )
 
 
-                        } else {
+                    } else {
 
-                            Snackbar.make(
-                                binding.root,
-                                "${getString(R.string.registered_users)}",
-                                Snackbar.LENGTH_INDEFINITE
-                            )
-                                .show()
-                        }
+                        Snackbar.make(
+                            binding.root,
+                            "${getString(R.string.registered_users)}",
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                            .show()
                     }
+                }
 
                 override fun onLike(post: Post) {
                     if (authViewModel.authenticated) {
-                            if (post.likedByMe) {
-                                viewModel.unlikeById(post.id)
-                            } else {
-                                viewModel.likeById(post.id)
-                            }
+                        if (post.likedByMe) {
+                            viewModel.unlikeById(post.id)
                         } else {
-
-                            Snackbar.make(
-                                binding.root,
-                                "${getString(R.string.registered_users)}",
-                                Snackbar.LENGTH_INDEFINITE
-                            )
-                                .show()
+                            viewModel.likeById(post.id)
                         }
+                    } else {
+
+                        Snackbar.make(
+                            binding.root,
+                            "${getString(R.string.registered_users)}",
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                            .show()
                     }
+                }
 
                 override fun onRemove(post: Post) {
                     viewModel.removeById(post.id)
@@ -196,17 +206,17 @@ class FeedFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             if (authViewModel.authenticated) {
-                    findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-                } else {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            } else {
 
-                    Snackbar.make(
-                        binding.root,
-                        "${getString(R.string.registered_users)}",
-                        Snackbar.LENGTH_INDEFINITE
-                    )
-                        .show()
-                }
+                Snackbar.make(
+                    binding.root,
+                    "${getString(R.string.registered_users)}",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .show()
             }
+        }
 
         binding.newer.setOnClickListener {
 
@@ -218,7 +228,6 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 }
-
 
 
 

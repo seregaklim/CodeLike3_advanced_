@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -21,6 +22,7 @@ import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
+import javax.inject.Inject
 
 private val empty = Post(
     id = 0,
@@ -39,31 +41,23 @@ private val empty = Post(
 )
 
 
-@ExperimentalCoroutinesApi
-class PostViewModel(application: Application) : AndroidViewModel(application) {
-    // упрощённый вариант
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @HiltViewModel
+    class PostViewModel @Inject constructor(
+        private val repository: PostRepository,
+        auth: AppAuth,
 
-
-    private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
-
-    //Для реализации репозитория мы можем добавить явное указание того,
-    // какой контекст использовать для работы с помощью flowOn:
-
-    val data: LiveData<FeedModel> = AppAuth.getInstance( )
-        .authStateFlow
-        .flatMapLatest { (myId, _) ->
-            repository.data
-                .map { posts ->
-                    FeedModel(
-                       posts.map { it.copy(ownedByMe = it.authorId == myId)
-
-                        },
-
-                        posts.isEmpty()
-                    )
-                }
-        }.asLiveData(Dispatchers.Default)
+        ) : ViewModel() {
+        val data: LiveData<FeedModel> = auth.authStateFlow
+            .flatMapLatest { (myId, _) ->
+                repository.data
+                    .map { posts ->
+                        FeedModel(
+                            posts.map { it.copy(ownedByMe = it.authorId == myId) },
+                            posts.isEmpty()
+                        )
+                    }
+            }.asLiveData(Dispatchers.Default)
 
 
 
@@ -241,27 +235,3 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 
-
-
-//    fun save() {
-//        edited.value?.let {
-//            _postCreated.value = Unit
-//
-//            viewModelScope.launch {
-//
-//
-//                try {
-//                    repository.save(it)
-//                    _dataState.value = FeedModelState()
-//
-//                } catch (e: Exception) {
-//                    _error.postValue(ErrorModel(ErrorType.NetworkError,
-//                        ActionType.Save, e.message ?: "Не сохранился"))
-//                    edited.postValue(empty)
-//
-//                    // _dataState.value = FeedModelState(error = true)
-//                }
-//            }
-//        }
-//        edited.value = empty
-//

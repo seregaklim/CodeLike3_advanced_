@@ -7,7 +7,7 @@ app:startDestination="@id/feedFragment">
 
 <fragment
     android:id="@+id/feedFragment"
-    android:name="FeedFragment"
+    android:name="ru.netology.nmedia.ui.FeedFragment"
     android:label="FeedFragment"
     tools:layout="@layout/fragment_feed">
     <action
@@ -27,22 +27,7 @@ app:startDestination="@id/feedFragment">
         app:popEnterAnim="@android:anim/fade_in"
         app:popExitAnim="@android:anim/fade_out"
         />
-    <action
-        android:id="@+id/action_feedFragment_to_fragmentEnter"
-        app:destination="@id/fragmentEnter"
-        app:enterAnim="@android:anim/fade_in"
-        app:exitAnim="@android:anim/fade_out"
-        app:popEnterAnim="@android:anim/fade_in"
-        app:popExitAnim="@android:anim/fade_out"
-        />
-    <action
-        android:id="@+id/action_feedFragment_to_fragmentLargePhoto"
-        app:destination="@id/fragmentLargePhoto"
-        app:enterAnim="@android:anim/fade_in"
-        app:exitAnim="@android:anim/fade_out"
-        app:popEnterAnim="@android:anim/fade_in"
-        app:popExitAnim="@android:anim/fade_out"
-        />
+
     <action
         android:id="@+id/action_feedFragment_to_fragmentRegistration"
         app:destination="@id/fragmentRegistration"
@@ -52,33 +37,55 @@ app:startDestination="@id/feedFragment">
         app:popExitAnim="@android:anim/fade_out"
 
         />
+    <action
+        android:id="@+id/action_feedFragment_to_fragmentEnter"
+        app:destination="@id/fragmentEnter"
+        app:enterAnim="@android:anim/fade_in"
+        app:exitAnim="@android:anim/fade_out"
+        app:popEnterAnim="@android:anim/fade_in"
+        app:popExitAnim="@android:anim/fade_out"
+
+        />
+    <action
+        android:id="@+id/action_feedFragment_to_fragmentLargePhoto"
+        app:destination="@id/fragmentLargePhoto"
+        app:enterAnim="@android:anim/fade_in"
+        app:exitAnim="@android:anim/fade_out"
+        app:popEnterAnim="@android:anim/fade_in"
+        app:popExitAnim="@android:anim/fade_out"
+
+        />
+
+
 </fragment>
 <fragment
     android:id="@+id/fragmentEditPost"
-    android:name="ru.netology.nmedia.activity.FragmentEditPost"
+    android:name="ru.netology.nmedia.ui.FragmentEditPost"
     tools:layout="@layout/fragment_edit_post"
     android:label="FragmentEditPost" />
-<fragment
-    android:id="@+id/fragmentEnter"
-    android:name="ru.netology.nmedia.activity.FragmentEnter"
-    tools:layout="@layout/fragment_enter"
-    android:label="FragmentEnter" />
-<fragment
-    android:id="@+id/fragmentLargePhoto"
-    android:name="ru.netology.nmedia.activity.FragmentLargePhoto"
-    tools:layout="@layout/fragment_large_photo"
-    android:label="FragmentLargePhoto" />
+
+
 <fragment
     android:id="@+id/fragmentRegistration"
-    android:name="ru.netology.nmedia.activity.FragmentRegistration"
+    android:name="ru.netology.nmedia.ui.FragmentRegistration"
     tools:layout="@layout/fragment_registration"
     android:label="FragmentRegistration" />
 
 <fragment
     android:id="@+id/newPostFragment"
-    android:name="ru.netology.nmedia.activity.NewPostFragment"
+    android:name="ru.netology.nmedia.ui.NewPostFragment"
     tools:layout="@layout/fragment_new_post"
     android:label="NewPostFragment" />
+    <fragment
+        android:id="@+id/fragmentEnter"
+        android:name="ru.netology.nmedia.activity.FragmentEnter"
+        tools:layout="@layout/fragment_enter"
+        android:label="FragmentEnter" />
+    <fragment
+        android:id="@+id/fragmentLargePhoto"
+        android:name="ru.netology.nmedia.activity.FragmentLargePhoto"
+        tools:layout="@layout/fragment_large_photo"
+        android:label="FragmentLargePhoto" />
 </navigation>
 
 

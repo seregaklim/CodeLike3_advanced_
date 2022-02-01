@@ -8,7 +8,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/common_spacing">
 
@@ -67,7 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="avatar,published,menu" />
+            app:constraint_referenced_ids="avatar,published,menu"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="80dp" />
 
         <TextView
             android:id="@+id/content"
@@ -93,7 +95,7 @@
         <FrameLayout
             android:id="@+id/photoContainer"
             android:layout_width="378dp"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,8 +103,8 @@
 
             <ImageView
                 android:id="@+id/photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:contentDescription="@string/description_photo" />
         </FrameLayout>
@@ -112,6 +114,7 @@
             style="@style/Widget.AppTheme.LikeCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:checkable="true"
             android:contentDescription="@string/description_post_like"
             app:icon="@drawable/ic_like_24dp"
@@ -125,6 +128,7 @@
             style="@style/Widget.AppTheme.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:contentDescription="@string/description_post_share"
             app:icon="@drawable/ic_share_24"
             app:layout_constraintStart_toEndOf="@+id/like"

@@ -16,20 +16,25 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.ActionType
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import javax.inject.Inject
 
 
-
-
+@AndroidEntryPoint
 class FragmentLargePhoto: Fragment() {
 
 
-    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    private val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,16 +99,17 @@ class FragmentLargePhoto: Fragment() {
 
 
                 binding.like.setOnClickListener {
-                    viewModel.data.observe(viewLifecycleOwner) {it->
+                    viewModel.dataState.observe(viewLifecycleOwner) {
 
+                            post->
+                        for ((index, post) in emptyList<Post>().withIndex()){
                             if (post.likedByMe) {
                                 viewModel.unlikeById(post.id.toLong())
                             } else {
                                 viewModel.likeById(post.id.toLong())
                             }
                         }
-                    }
-
+                    }}
                 binding.share.setOnClickListener {
 
                     val intent = Intent().apply {

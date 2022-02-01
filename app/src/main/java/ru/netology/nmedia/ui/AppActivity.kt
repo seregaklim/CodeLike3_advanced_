@@ -1,4 +1,7 @@
-package ru.netology.nmedia.activity
+
+
+
+package ru.netology.nmedia.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,19 +10,28 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
+    @Inject
+
+    lateinit var auth: AppAuth
     private val viewModel: AuthViewModel by viewModels()
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,7 +161,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.signin -> {
-               //вызова перехода у активити
+                //вызова перехода у активити
                 invalidateOptionsMenu()
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragmentEnter)
@@ -157,7 +169,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 true
             }
             R.id.signup -> {
-               //вызова перехода у активити
+                //вызова перехода у активити
                 invalidateOptionsMenu()
                 findNavController(R.id.nav_host_fragment)
                     .navigate(R.id.action_feedFragment_to_fragmentRegistration)
@@ -169,8 +181,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 invalidateOptionsMenu()
 
                 findNavController(R.id.nav_host_fragment).navigateUp()
-                AppAuth.getInstance().removeAuth()
-              true
+                auth .removeAuth()
+                true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -194,8 +206,4 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             println(it)
         }
     }
-
-
-
 }
-
