@@ -35,6 +35,9 @@ class FragmentLargePhoto: Fragment() {
         ownerProducer = ::requireParentFragment,
     )
 
+    companion object {
+        var Bundle.textArg: String? by StringArg
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,6 +73,22 @@ class FragmentLargePhoto: Fragment() {
 //            }
 //        }
 
+        val service = Wallsevice()
+
+
+//            viewModel.data.observe(viewLifecycleOwner, { empty->
+//
+//                for ((index, post) in emptyList<Post>().withIndex()) {
+//                    if (post.id== post.id) {
+//
+//                       binding.like.isChecked = post.likedByMe
+//                       binding.like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+//                    }
+//                }}
+//            )
+
+
+
 
 
         binding.apply {
@@ -84,32 +103,22 @@ class FragmentLargePhoto: Fragment() {
                     .into(photo)
             }
 
-            viewModel.data.observe(viewLifecycleOwner) {posts->
-
                 arguments?.getString("likes")
                     ?.let(binding.like::setText)
-            }
-            viewModel.data.observe(viewLifecycleOwner) {posts:FeedModel ->
-
 
                 post.likedByMe = arguments?.getBoolean("likedByMeTrue") == true
                 like.isChecked =  post.likedByMe
-            }
-
-
 
                 binding.like.setOnClickListener {
-                    viewModel.dataState.observe(viewLifecycleOwner) {
 
-                            post->
-                        for ((index, post) in emptyList<Post>().withIndex()){
-                            if (post.likedByMe) {
+
+                            if (post.likedByMe){
                                 viewModel.unlikeById(post.id.toLong())
                             } else {
                                 viewModel.likeById(post.id.toLong())
                             }
                         }
-                    }}
+
                 binding.share.setOnClickListener {
 
                     val intent = Intent().apply {
