@@ -217,13 +217,13 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         }
     }
     @Inject
-    lateinit var firebaseMessaging: FirebaseMessaging
+    lateinit var firebaseMessaging:FirebaseMessaging
 
     @Inject
     lateinit var googleApiAvailability: GoogleApiAvailability
 
     private fun checkGoogleApiAvailability() {
-        with(GoogleApiAvailability.getInstance()) {
+        with(googleApiAvailability) {
             val code = isGooglePlayServicesAvailable(this@AppActivity)
             if (code == ConnectionResult.SUCCESS) {
                 return@with
@@ -241,21 +241,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         }
     }
 }
-@InstallIn(SingletonComponent::class)
-@Module
-object FirebaseModul {
-    @Provides
 
-    fun getInstance(): FirebaseMessaging  = FirebaseMessaging.getInstance()
-}
 
-@InstallIn(SingletonComponent::class)
-@Module
-object GoogleApiAvailability {
-    @Provides
-
-    fun getInstance(): GoogleApiAvailability  = GoogleApiAvailability.getInstance()
-}
 
 
 
