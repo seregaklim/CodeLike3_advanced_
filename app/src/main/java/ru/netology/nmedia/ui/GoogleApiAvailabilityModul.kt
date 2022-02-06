@@ -8,7 +8,7 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-class GoogleApiAvailabilityModul {
+object GoogleApiAvailabilityModul {
     @Provides
     fun provideGoogleApiAvailability(): GoogleApiAvailability = GoogleApiAvailability.getInstance()
 }

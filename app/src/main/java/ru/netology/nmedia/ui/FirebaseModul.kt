@@ -8,7 +8,7 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-class FirebaseModul {
+object FirebaseModul {
     @Provides
     fun provideFirebaseMessaging():FirebaseMessaging = FirebaseMessaging.getInstance()
 }
