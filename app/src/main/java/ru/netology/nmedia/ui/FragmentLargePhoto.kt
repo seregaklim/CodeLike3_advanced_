@@ -14,9 +14,12 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.filter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Attachment
@@ -35,6 +38,9 @@ class FragmentLargePhoto: Fragment() {
         ownerProducer = ::requireParentFragment,
     )
 
+    companion object {
+        var Bundle.textArg: String? by StringArg
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,16 +68,17 @@ class FragmentLargePhoto: Fragment() {
                 type = AttachmentType.IMAGE
             )
         )
-//        val service = Wallsevice()
-//        viewModel.data.observe(viewLifecycleOwner) { it ->
-//            binding.apply {
-//                like.isChecked = post.likedByMe
-//                like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
-//            }
-//        }
+        val service = Wallsevice()
 
-
-
+        //подписка  Flow<PagingData<Post>>
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest { posts ->
+                posts.filter {it.id == post.id}?.let {
+                    binding.like.isChecked = post.likedByMe
+                        binding.like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+                }
+            }
+        }
         binding.apply {
 
             post.attachment?.let {
@@ -84,32 +91,22 @@ class FragmentLargePhoto: Fragment() {
                     .into(photo)
             }
 
-            viewModel.data.observe(viewLifecycleOwner) {posts->
-
                 arguments?.getString("likes")
                     ?.let(binding.like::setText)
-            }
-            viewModel.data.observe(viewLifecycleOwner) {posts:FeedModel ->
-
 
                 post.likedByMe = arguments?.getBoolean("likedByMeTrue") == true
                 like.isChecked =  post.likedByMe
-            }
-
-
 
                 binding.like.setOnClickListener {
-                    viewModel.dataState.observe(viewLifecycleOwner) {
 
-                            post->
-                        for ((index, post) in emptyList<Post>().withIndex()){
-                            if (post.likedByMe) {
+
+                            if (post.likedByMe){
                                 viewModel.unlikeById(post.id.toLong())
                             } else {
                                 viewModel.likeById(post.id.toLong())
                             }
                         }
-                    }}
+
                 binding.share.setOnClickListener {
 
                     val intent = Intent().apply {
