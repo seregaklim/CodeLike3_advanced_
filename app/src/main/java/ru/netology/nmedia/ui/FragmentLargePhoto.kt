@@ -14,9 +14,12 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.filter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Attachment
@@ -65,32 +68,17 @@ class FragmentLargePhoto: Fragment() {
                 type = AttachmentType.IMAGE
             )
         )
-//        val service = Wallsevice()
-//        viewModel.data.observe(viewLifecycleOwner) { it ->
-//            binding.apply {
-//                like.isChecked = post.likedByMe
-//                like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
-//            }
-//        }
-
         val service = Wallsevice()
 
-
-//            viewModel.data.observe(viewLifecycleOwner, { empty->
-//
-//                for ((index, post) in emptyList<Post>().withIndex()) {
-//                    if (post.id== post.id) {
-//
-//                       binding.like.isChecked = post.likedByMe
-//                       binding.like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
-//                    }
-//                }}
-//            )
-
-
-
-
-
+        //подписка  Flow<PagingData<Post>>
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest { posts ->
+                posts.filter {it.id == post.id}?.let {
+                    binding.like.isChecked = post.likedByMe
+                        binding.like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+                }
+            }
+        }
         binding.apply {
 
             post.attachment?.let {

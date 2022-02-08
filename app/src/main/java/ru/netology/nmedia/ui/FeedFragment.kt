@@ -10,9 +10,14 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.filter
+import androidx.paging.map
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.FragmentEnter.Companion.textArg
@@ -142,10 +147,29 @@ class FeedFragment : Fragment() {
                                 .show()
                         }
                     }
-                }}
+                }
+            }
         )
-
         binding.list.adapter = adapter
+
+//Подписываться на Flow и отправлять данные в adapter:
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest {
+                adapter.submitData(it)
+            }
+        }
+//Показывать индикатор загрузки
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swiperefresh.isRefreshing =
+                    state.refresh is LoadState.Loading ||
+                            state.prepend is LoadState.Loading ||
+                            state.append is LoadState.Loading
+            }
+        }
+//А также реализуем swipe-to-refresh, который поможет обновить все данные:
+        binding.swiperefresh.setOnRefreshListener(adapter::refresh)
+
 
         //обновление странички,Для скрытия или показа значка перезагрузки есть метод isRefreshing
         viewModel.dataState.observe(viewLifecycleOwner, { state ->
@@ -153,7 +177,7 @@ class FeedFragment : Fragment() {
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                    .setAction(R.string.retry_loading) { adapter.loadStateFlow }
                     .show()
             }
         })
@@ -171,7 +195,7 @@ class FeedFragment : Fragment() {
                         ActionType.GetAll -> viewModel.loadPosts()
                         ActionType.Like -> viewModel.likeById(id.toLong())
                         ActionType.unlikeById -> viewModel.unlikeById(id.toLong())
-                        ActionType.Refresh -> viewModel.refreshPosts()
+                        ActionType.Refresh -> adapter.refresh()
                         ActionType.Save -> viewModel.save()
                         ActionType.RemoveById -> viewModel.removeById(id.toLong())
                         ActionType.CountMessegePost -> viewModel.countMessegePost()
@@ -182,27 +206,19 @@ class FeedFragment : Fragment() {
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner, { state ->
-            adapter.submitList(state.posts)
-            binding.emptyText.isVisible = state.empty
-        })
+//        binding.newer.visibility = View.INVISIBLE
+//        viewModel.newerCount.observe(viewLifecycleOwner) {
+//
+//            binding.newer.visibility = if (it == 0) {
+//                View.INVISIBLE  //невидимая
+//            } else {
+//                //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
+//                View.VISIBLE
+//            }
+//            viewModel.countMessegePost()
+//            binding.newer.text = it.toString()
+//        }
 
-        binding.newer.visibility = View.INVISIBLE
-        viewModel.newerCount.observe(viewLifecycleOwner) {
-
-            binding.newer.visibility = if (it == 0) {
-                View.INVISIBLE  //невидимая
-            } else {
-                //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
-                View.VISIBLE
-            }
-            viewModel.countMessegePost()
-            binding.newer.text = it.toString()
-        }
-
-        binding.swiperefresh.setOnRefreshListener {
-            viewModel.refreshPosts()
-        }
 
         binding.fab.setOnClickListener {
             if (authViewModel.authenticated) {
@@ -220,15 +236,19 @@ class FeedFragment : Fragment() {
 
         binding.newer.setOnClickListener {
 
-            viewModel.refreshPosts()
+            adapter.refresh()
             viewModel.unCountNewer()
             binding.newer.visibility = View.INVISIBLE
+        }
+        //при login/logout'е данные запрашивались с сервера заново
+        authViewModel.data.observe(viewLifecycleOwner) {
+            adapter.refresh()
         }
 
         return binding.root
     }
-}
 
+}
 
 
 

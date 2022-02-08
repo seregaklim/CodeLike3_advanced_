@@ -1,6 +1,10 @@
 package ru.netology.nmedia.repository
 
+import PostPagingSource
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -28,9 +32,12 @@ class PostRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
 ) : PostRepository {
 
-    override val data = postDao.getAll()
-        .map(List<PostEntity>::toDto)
-        .flowOn(Dispatchers.Default)
+    //Вызов refresh на adapter'е автоматически приведёт к загрузке данных и
+    // очищению старых данных – будет создан новый экземпляр PagingSource
+    override val data: Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+        pagingSourceFactory = { PostPagingSource(apiService) },
+    ).flow
 
     override suspend fun getAll() {
         try {

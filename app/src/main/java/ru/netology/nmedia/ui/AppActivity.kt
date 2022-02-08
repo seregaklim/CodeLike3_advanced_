@@ -208,7 +208,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             R.id.signout -> {
                 //вызова перехода у активити
                 invalidateOptionsMenu()
-
                 findNavController(R.id.nav_host_fragment).navigateUp()
                 auth .removeAuth()
                 true
