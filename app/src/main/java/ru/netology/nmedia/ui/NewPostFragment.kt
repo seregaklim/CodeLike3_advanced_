@@ -14,7 +14,6 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
-import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg

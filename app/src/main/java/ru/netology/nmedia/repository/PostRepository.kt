@@ -15,8 +15,11 @@ import ru.netology.nmedia.dto.User
 interface PostRepository {
     val data: Flow<PagingData<Post>>
     suspend fun getAll()
+
     //подписаться на изменения data
     fun getNewerCount(id: Long):  Flow<Int>
+    //подписаться на id первого поста в БД
+    fun getFirstPostId(): Flow<Long?>
 
     suspend fun save(post: Post)
     suspend fun removeById(id: Long)

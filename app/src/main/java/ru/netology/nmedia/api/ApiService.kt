@@ -29,7 +29,6 @@ fun retrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
     .client(client)
     .build()
 
-
 interface ApiService {
 
     @POST("users/push-tokens")

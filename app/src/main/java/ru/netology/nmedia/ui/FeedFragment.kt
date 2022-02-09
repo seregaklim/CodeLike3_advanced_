@@ -1,6 +1,5 @@
 
 package ru.netology.nmedia.ui
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +16,7 @@ import androidx.paging.filter
 import androidx.paging.map
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
@@ -40,7 +40,6 @@ class FeedFragment : Fragment() {
     private val authViewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
     )
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -191,7 +190,7 @@ class FeedFragment : Fragment() {
                 Snackbar.LENGTH_INDEFINITE
             ).apply {
                 setAction(R.string.retry_loading) {
-                    when (error.action) {
+                    when(error.action) {
                         ActionType.GetAll -> viewModel.loadPosts()
                         ActionType.Like -> viewModel.likeById(id.toLong())
                         ActionType.unlikeById -> viewModel.unlikeById(id.toLong())
@@ -206,19 +205,22 @@ class FeedFragment : Fragment() {
             }
         }
 
-//        binding.newer.visibility = View.INVISIBLE
-//        viewModel.newerCount.observe(viewLifecycleOwner) {
-//
-//            binding.newer.visibility = if (it == 0) {
-//                View.INVISIBLE  //невидимая
-//            } else {
-//                //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
-//                View.VISIBLE
-//            }
-//            viewModel.countMessegePost()
-//            binding.newer.text = it.toString()
-//        }
 
+        binding.newer.visibility = View.INVISIBLE
+        lifecycleScope.launchWhenCreated {
+            viewModel.newerCount.collectLatest {
+
+                binding.newer.visibility = if (it == 0) {
+                    View.INVISIBLE  //невидимая
+                } else {
+                    //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
+                    View.VISIBLE
+                }
+                viewModel.countMessegePost()
+                binding.newer.text = it.toString()
+
+            }
+        }
 
         binding.fab.setOnClickListener {
             if (authViewModel.authenticated) {
@@ -252,4 +254,15 @@ class FeedFragment : Fragment() {
 
 
 
-
+//        binding.newer.visibility = View.INVISIBLE
+//        viewModel.newerCount.observe(viewLifecycleOwner) {
+//
+//            binding.newer.visibility = if (it == 0) {
+//                View.INVISIBLE  //невидимая
+//            } else {
+//                //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
+//                View.VISIBLE
+//            }
+//            viewModel.countMessegePost()
+//            binding.newer.text = it.toString()
+//        }

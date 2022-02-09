@@ -43,7 +43,7 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     auth: AppAuth,
 ) : ViewModel() {
-   // кэширование данных для downstream flow
+//  //  кэширование данных для downstream flow
 //     private val cached = repository
 //       .data
 //      .cachedIn(viewModelScope)
@@ -78,7 +78,7 @@ val data: Flow<PagingData<Post>>  =repository.data
     private val _error = SingleLiveEvent<ErrorModel>()
     val error: LiveData<ErrorModel>
         get() = _error
-
+//
 //        switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
 //     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
 //    val newerCount: LiveData<Int> = data.switchMap {
@@ -86,6 +86,12 @@ val data: Flow<PagingData<Post>>  =repository.data
 //            .catch { e -> e.printStackTrace() }
 //            .asLiveData(Dispatchers.Default)
 //    }
+
+    // подписаться на id первого поста в БД
+    val newerCount: Flow<Int> = repository.getFirstPostId()
+    .flatMapLatest {
+        repository.getNewerCount(it ?: 0)
+    }
 
     init {
 

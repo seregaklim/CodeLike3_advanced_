@@ -1,6 +1,7 @@
 package ru.netology.nmedia.dao
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.entity.PostEntity
@@ -10,11 +11,16 @@ import ru.netology.nmedia.enumeration.AttachmentType
 interface PostDao {
 
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
-    fun getAll(): Flow<List<PostEntity>>
+    fun pagingSource(): PagingSource<Int, PostEntity>
 
+    @Query("SELECT * FROM PostEntity ORDER BY id DESC")
+    fun getAll(): Flow<List<PostEntity>>
 
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean
+
+    @Query("SELECT COUNT(*) FROM PostEntity")
+    suspend fun count(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(post: PostEntity)
@@ -24,6 +30,10 @@ interface PostDao {
 
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun removeById(id: Long)
+
+    @Query("DELETE FROM PostEntity")
+    suspend fun removeAll()
+
 
     @Query(
         """
@@ -39,7 +49,7 @@ interface PostDao {
         """
         UPDATE PostEntity SET
         newer = newer ++1
-        
+
         """
     )
     suspend fun countMessegePost()
@@ -49,14 +59,20 @@ interface PostDao {
         """
         UPDATE PostEntity SET
         newer = newer - newer
-        
+
         """
     )
     suspend fun unCountNewer()
 
 
-
 }
+
+
+
+
+
+
+
 
 class Converters {
     @TypeConverter
