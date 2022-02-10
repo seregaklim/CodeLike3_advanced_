@@ -78,7 +78,7 @@ interface ApiService {
     @GET("posts/latest")
     suspend fun getLatest(@Query("count") count: Int): Response<List<Post>>
 
-
+    //getAfter, который грузит посты с id'шниками больше переданного
     @GET("posts/{id}/after")
     suspend fun getAfter(
         @Path("id") id: Long,

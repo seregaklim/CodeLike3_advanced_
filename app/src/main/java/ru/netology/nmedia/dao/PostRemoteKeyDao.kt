@@ -12,9 +12,11 @@ interface PostRemoteKeyDao {
     @Query("SELECT COUNT(*) == 0 FROM PostRemoteKeyEntity")
     suspend fun isEmpty(): Boolean
 
+    //запись с максимальным id
     @Query("SELECT MAX(id) FROM PostRemoteKeyEntity")
     suspend fun max(): Long?
 
+    //запись с минимальным id
     @Query("SELECT MIN(id) FROM PostRemoteKeyEntity")
     suspend fun min(): Long?
 
@@ -24,6 +26,7 @@ interface PostRemoteKeyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(keys: List<PostRemoteKeyEntity>)
 
+    // позволит нам удалить все посты (будем удалять их при Refresh'е):
     @Query("DELETE FROM PostRemoteKeyEntity")
     suspend fun removeAll()
 

@@ -41,7 +41,7 @@ class PostRepositoryImpl @Inject constructor(
         config = PagingConfig(pageSize = 25),
         remoteMediator = PostRemoteMediator(apiService, appDb, postDao, postRemoteKeyDao),
         pagingSourceFactory = postDao::pagingSource,
-
+//Но во ViewModel нам нужно Post, а не PostEntity, поэтому нужно добавить map для конвертации:
         ).flow.map { pagingData ->
         pagingData.map(PostEntity::toDto)
     }

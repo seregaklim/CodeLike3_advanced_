@@ -27,7 +27,6 @@ class FragmentEnter : Fragment() {
         var Bundle.textArg: String? by StringArg
     }
 
-
     private var fragmentBinding: FragmentEnter? = null
 
     override fun onCreateView(
