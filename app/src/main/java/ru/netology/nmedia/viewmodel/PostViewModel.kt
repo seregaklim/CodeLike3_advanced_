@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
 import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
 import javax.inject.Inject
-
+import kotlin.random.Random
 
 
 private val empty = Post(
@@ -43,22 +44,55 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     auth: AppAuth,
 ) : ViewModel() {
-//  //  кэширование данных для downstream flow
-//     private val cached = repository
-//       .data
-//      .cachedIn(viewModelScope)
-//      val data: Flow<PagingData<Post>>  = auth.authStateFlow
-//            .flatMapLatest { (myId, _) ->
-//            //не перезапрашиваем посты заново при смене статуса аутентификации,
-//            // а remap'им существующие из кэша
-//            cached.map { pagingData ->
-//                pagingData.map { post ->
-//                    post.copy(ownedByMe = post.authorId == myId)}
-//            }
+
+    //  кэширование данных для downstream flow
+//    private val cached: Flow<PagingData<FeedItem>> = repository
+//        .data
+//        .map { pagingData ->
+//            //если данные рекламы будут приходить отдельно по сети,
+//            // то делать это нужно в репозитории, связав два Flow операторами):
+//            pagingData.insertSeparators(
+//                generator = { before, after ->
+//                    if (before?.id?.rem(5) != 0L) null else
+//                        Ad(
+//                            Random.nextLong(),
+//                            "https://netology.ru",
+//                            "figma.jpg"
+//                        )
+//                }
+//            )
 //        }
+//        .cachedIn(viewModelScope)
+//
+//    val data: Flow<PagingData<FeedItem>> = auth.authStateFlow
+//        .flatMapLatest { (myId, _) ->
+//            cached
+//                .map { pagingData ->
+//                    pagingData.map { item ->
+//                        if (item !is Post) item else item.copy(ownedByMe = item.authorId == myId)
+//                    }
+//                }
+//        }
+
+
 //подписка без кеширования
-val data: Flow<PagingData<Post>>  =repository.data
+val data: Flow<PagingData<FeedItem>>  =repository.data
         .cachedIn(viewModelScope)
+        .map { pagingData ->
+           //если данные рекламы будут приходить отдельно по сети,
+            // то делать это нужно в репозитории, связав два Flow операторами):
+            pagingData.insertSeparators(
+                generator = { before, after ->
+                    if (before?.id?.rem(7) != 0L) null else
+                        Ad(
+                            Random.nextLong(),
+                            "https://netology.ru",
+                            "figma.jpg"
+                        )
+                }
+            )
+        }
+
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -79,6 +113,7 @@ val data: Flow<PagingData<Post>>  =repository.data
     val error: LiveData<ErrorModel>
         get() = _error
 //
+ //работает с  feedmodel
 //        switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
 //     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
 //    val newerCount: LiveData<Int> = data.switchMap {

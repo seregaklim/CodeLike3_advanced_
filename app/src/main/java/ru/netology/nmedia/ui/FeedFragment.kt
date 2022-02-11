@@ -15,6 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.filter
 import androidx.paging.map
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -22,12 +25,13 @@ import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.FragmentEnter.Companion.textArg
-import ru.netology.nmedia.adapter.OnInteractionListener
-import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.adapter.FeedAdapter
+import ru.netology.nmedia.adapter.PagingLoadStateAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.ActionType
+import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import javax.inject.Inject
@@ -35,22 +39,28 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
 
+    @Inject
+    lateinit var repository: PostRepository
+
+    @Inject
+    lateinit var auth: AppAuth
+
     private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment,
-    )
+        ownerProducer = ::requireParentFragment,)
+
     private val authViewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
     )
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-        val adapter = PostsAdapter(
-            object : OnInteractionListener {
+        val adapter = FeedAdapter(object : FeedAdapter.OnInteractionListener {
+
 
 
                 override fun onEdit(post: Post) {
@@ -135,7 +145,49 @@ class FeedFragment : Fragment() {
                 }
             }
         )
-        binding.list.adapter = adapter
+       //разделитель постов
+       binding.list.addItemDecoration(DividerItemDecoration(binding.list.context,DividerItemDecoration.VERTICAL))
+
+
+        //PagingAdapter позволяет также устанавливать специальный адаптер
+        // для отображения прогресса загрузки и попыток повтора запроса:
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PagingLoadStateAdapter(object : PagingLoadStateAdapter.OnInteractionListener {
+                override fun onRetry() {
+                    adapter.retry()
+                }
+            }),
+            footer = PagingLoadStateAdapter(object : PagingLoadStateAdapter.OnInteractionListener {
+                override fun onRetry() {
+                    adapter.retry()
+                }
+            }),
+        )
+
+//
+//        Декораторов можно добавлять несколько, они будут храниться в одном списке внутри RecyclerView.
+//         Также декораторы могут совмещать в себе дополнительную функциональность. Например,
+//         поддержка swipe и drag-and-drop
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.START or ItemTouchHelper.END
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSwiped(
+                viewHolder: RecyclerView.ViewHolder,
+                direction: Int
+            ) {
+                println("DO SOMETHING")
+            }
+        }).attachToRecyclerView(binding.list)
+
+
 
 //Подписываться на Flow и отправлять данные в adapter:
         lifecycleScope.launchWhenCreated {
@@ -191,7 +243,7 @@ class FeedFragment : Fragment() {
             }
         }
 
-
+        //показывает новые посты
         binding.newer.visibility = View.INVISIBLE
         lifecycleScope.launchWhenCreated {
             viewModel.newerCount.collectLatest {

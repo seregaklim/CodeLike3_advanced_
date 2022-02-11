@@ -1,42 +1,37 @@
 package ru.netology.nmedia.activity
 import Wallsevice
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentLargePhotoBinding
-import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.paging.filter
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.dto.Attachment
-import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.ActionType
-import ru.netology.nmedia.model.FeedModel
-import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.repository.PostRepository
 import javax.inject.Inject
-
-
 
 
 @AndroidEntryPoint
 class FragmentLargePhoto : Fragment() {
 
+    @Inject
+    lateinit var repository: PostRepository
 
-    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    @Inject
+    lateinit var auth: AppAuth
+
+    private val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,8 +48,8 @@ class FragmentLargePhoto : Fragment() {
 
 //        lifecycleScope.launchWhenCreated {
 //                viewModel.data.collectLatest { posts ->
-//                    posts.filter { it.id == id }?.let { post ->
-//                       
+//                   posts.filter{it.id ==  id} ?.let { post ->
+//
 //                        binding.apply {
 //
 //                        like.isChecked =post.likedByMe
