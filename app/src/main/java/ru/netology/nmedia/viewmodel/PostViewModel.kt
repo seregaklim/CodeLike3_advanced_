@@ -2,10 +2,7 @@ package ru.netology.nmedia.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.*
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.insertSeparators
-import androidx.paging.map
+import androidx.paging.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +15,12 @@ import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
+import java.sql.Date
+import java.time.Clock
+import java.time.Clock.tickMinutes
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -45,75 +48,53 @@ class PostViewModel @Inject constructor(
     auth: AppAuth,
 ) : ViewModel() {
 
-    //  кэширование данных для downstream flow
-//    private val cached: Flow<PagingData<FeedItem>> = repository
-//        .data
-//        .map { pagingData ->
-//            //если данные рекламы будут приходить отдельно по сети,
-//            // то делать это нужно в репозитории, связав два Flow операторами):
-//            pagingData.insertSeparators(
-//                generator = { before, after ->
-//                    if (before?.id?.rem(5) != 0L) null else
-//                        Ad(
-//                            Random.nextLong(),
-//                            "https://netology.ru",
-//                            "figma.jpg"
-//                        )
-//                }
-//            )
-//        }
-//        .cachedIn(viewModelScope)
-//
-//    val data: Flow<PagingData<FeedItem>> = auth.authStateFlow
-//        .flatMapLatest { (myId, _) ->
-//            cached
-//                .map { pagingData ->
-//                    pagingData.map { item ->
-//                        if (item !is Post) item else item.copy(ownedByMe = item.authorId == myId)
-//                    }
-//                }
-//        }
+    val data: Flow<PagingData<FeedItem>>  =repository.data
+     .cachedIn(viewModelScope)
+     .map { pagingData ->
+    //если данные рекламы будут приходить отдельно по сети,
+    // то делать это нужно в репозитории, связав два Flow операторами):
+    pagingData.insertSeparators(
+    generator = { before, after ->
+        if (before?.id?.rem(7) != 0L)
+
+            Timing(
+                Random.nextLong(),
+               "")
 
 
-//подписка без кеширования
-val data: Flow<PagingData<FeedItem>>  =repository.data
-        .cachedIn(viewModelScope)
-        .map { pagingData ->
-           //если данные рекламы будут приходить отдельно по сети,
-            // то делать это нужно в репозитории, связав два Flow операторами):
-            pagingData.insertSeparators(
-                generator = { before, after ->
-                    if (before?.id?.rem(7) != 0L) null else
-                        Ad(
-                            Random.nextLong(),
-                            "https://netology.ru",
-                            "figma.jpg"
-                        )
-                }
-            )
-        }
+        else
+
+            Ad(
+                Random.nextLong(),
+                "https://netology.ru",
+                "figma.jpg",
+           Timing(0,  ""))
+}
+    )
+     }
+
 
 
     private val _dataState = MutableLiveData<FeedModelState>()
-    val dataState: LiveData<FeedModelState>
-        get() = _dataState
+val dataState: LiveData<FeedModelState>
+    get() = _dataState
 
-    private val edited = MutableLiveData(empty)
-    private val _postCreated = SingleLiveEvent<Unit>()
-    val postCreated: LiveData<Unit>
-        get() = _postCreated
+private val edited = MutableLiveData(empty)
+private val _postCreated = SingleLiveEvent<Unit>()
+val postCreated: LiveData<Unit>
+    get() = _postCreated
 
-    private val noPhoto = PhotoModel()
-    private val _photo = MutableLiveData(noPhoto)
-    val photo: LiveData<PhotoModel>
-        get() = _photo
+private val noPhoto = PhotoModel()
+private val _photo = MutableLiveData(noPhoto)
+val photo: LiveData<PhotoModel>
+    get() = _photo
 
-    // LiveData<ErrorModel> (для обработки ошибки)
-    private val _error = SingleLiveEvent<ErrorModel>()
-    val error: LiveData<ErrorModel>
-        get() = _error
+// LiveData<ErrorModel> (для обработки ошибки)
+private val _error = SingleLiveEvent<ErrorModel>()
+val error: LiveData<ErrorModel>
+    get() = _error
 //
- //работает с  feedmodel
+//работает с  feedmodel
 //        switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
 //     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
 //    val newerCount: LiveData<Int> = data.switchMap {
@@ -122,143 +103,143 @@ val data: Flow<PagingData<FeedItem>>  =repository.data
 //            .asLiveData(Dispatchers.Default)
 //    }
 
-    // подписаться на id первого поста в БД
-    val newerCount: Flow<Int> = repository.getFirstPostId()
+// подписаться на id первого поста в БД
+val newerCount: Flow<Int> = repository.getFirstPostId()
     .flatMapLatest {
         repository.getNewerCount(it ?: 0)
     }
 
-    init {
+init {
 
-        loadPosts()
+    loadPosts()
+}
+
+fun loadPosts() = viewModelScope.launch {
+    try {
+        _dataState.value = FeedModelState(loading = true)
+        // repository.stream.cachedIn(viewModelScope).
+        _dataState.value = FeedModelState()
+    } catch (e: Exception) {
+        _dataState.value = FeedModelState(error = true)
     }
+}
 
-    fun loadPosts() = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(loading = true)
-            // repository.stream.cachedIn(viewModelScope).
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = true)
-        }
-    }
-
-    fun refreshPosts() = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(refreshing = true)
+fun refreshPosts() = viewModelScope.launch {
+    try {
+        _dataState.value = FeedModelState(refreshing = true)
 //            repository.getAll()
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = true)
-        }
+        _dataState.value = FeedModelState()
+    } catch (e: Exception) {
+        _dataState.value = FeedModelState(error = true)
     }
+}
 
-    fun save() {
-        edited.value?.let {
-            _postCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    when(_photo.value) {
-                        noPhoto -> repository.save(it)
-                        else -> _photo.value?.file?.let { file ->
-                            repository.saveWithAttachment(it, MediaUpload(file))
-                        }
+fun save() {
+    edited.value?.let {
+        _postCreated.value = Unit
+        viewModelScope.launch {
+            try {
+                when(_photo.value) {
+                    noPhoto -> repository.save(it)
+                    else -> _photo.value?.file?.let { file ->
+                        repository.saveWithAttachment(it, MediaUpload(file))
                     }
-                    _dataState.value = FeedModelState()
-                } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
                 }
+                _dataState.value = FeedModelState()
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
             }
         }
-        edited.value = empty
-        _photo.value = noPhoto
     }
+    edited.value = empty
+    _photo.value = noPhoto
+}
 
-    fun edit(post: Post){
-        edited.value = post
+fun edit(post: Post){
+    edited.value = post
 
+}
+
+fun changeContent(content: String) {
+    val text = content.trim()
+    if (edited.value?.content == text) {
+        return
     }
+    edited.value = edited.value?.copy(content = text)
+}
 
-    fun changeContent(content: String) {
-        val text = content.trim()
-        if (edited.value?.content == text) {
-            return
-        }
-        edited.value = edited.value?.copy(content = text)
+fun changePhoto(uri: Uri?, file: File?) {
+    _photo.value = PhotoModel(uri, file)
+}
+
+fun likeById(id: Long) = viewModelScope.launch {
+    try {
+        repository.likeById(id)
+    } catch (e: Exception) {
+        _error.postValue(ErrorModel(ErrorType.AppError, ActionType.Like, e.message ?: ""))
+        //_data.postValue(FeedModel(error = true))
     }
+}
 
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = PhotoModel(uri, file)
+fun unlikeById(id: Long) = viewModelScope.launch {
+    try {
+        repository.unlikeById(id)
+
+
+    } catch (e: Exception) {
+        _error.postValue(ErrorModel(ErrorType.AppError, ActionType.Like, e.message ?: ""))
+        //_data.postValue(FeedModel(error = true))
     }
-
-    fun likeById(id: Long) = viewModelScope.launch {
-        try {
-            repository.likeById(id)
-        } catch (e: Exception) {
-            _error.postValue(ErrorModel(ErrorType.AppError, ActionType.Like, e.message ?: ""))
-            //_data.postValue(FeedModel(error = true))
-        }
-    }
-
-    fun unlikeById(id: Long) = viewModelScope.launch {
-        try {
-            repository.unlikeById(id)
+}
 
 
-        } catch (e: Exception) {
-            _error.postValue(ErrorModel(ErrorType.AppError, ActionType.Like, e.message ?: ""))
-            //_data.postValue(FeedModel(error = true))
-        }
-    }
+fun removeById(id: Long) = viewModelScope.launch {
+    try {
+        repository.removeById(id)
+    } catch (e: Exception) {
 
-
-    fun removeById(id: Long) = viewModelScope.launch {
-        try {
-            repository.removeById(id)
-        } catch (e: Exception) {
-
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError,
-                    ActionType.RemoveById, e.message ?: ""
-                )
+        _error.postValue(
+            ErrorModel(
+                ErrorType.NetworkError,
+                ActionType.RemoveById, e.message ?: ""
             )
+        )
 
-            //_data.postValue(_data.value?.copy(posts = old))
-        }
-
+        //_data.postValue(_data.value?.copy(posts = old))
     }
 
-    fun countMessegePost ()= viewModelScope.launch {
-        try {
-            repository.countMessegePost()
-        } catch (e: Exception) {
+}
 
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError,
-                    ActionType.CountMessegePost, e.message ?: ""
-                )
+fun countMessegePost ()= viewModelScope.launch {
+    try {
+        repository.countMessegePost()
+    } catch (e: Exception) {
+
+        _error.postValue(
+            ErrorModel(
+                ErrorType.NetworkError,
+                ActionType.CountMessegePost, e.message ?: ""
             )
-            //_data.postValue(_data.value?.copy(posts = old))
-        }
+        )
+        //_data.postValue(_data.value?.copy(posts = old))
     }
+}
 
 
-    fun unCountNewer()= viewModelScope.launch {
+fun unCountNewer()= viewModelScope.launch {
 
-        try {
-            repository.unCountNewer()
-        } catch (e: Exception) {
+    try {
+        repository.unCountNewer()
+    } catch (e: Exception) {
 
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError,
-                    ActionType.UnCountMessegePost, e.message ?: ""
-                )
+        _error.postValue(
+            ErrorModel(
+                ErrorType.NetworkError,
+                ActionType.UnCountMessegePost, e.message ?: ""
             )
-        }
+        )
     }
+}
 
 }
 

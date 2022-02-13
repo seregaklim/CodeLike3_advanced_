@@ -1,5 +1,5 @@
-package ru.netology.nmedia.adapter
 
+package ru.netology.nmedia.adapter
 import Wallsevice
 import android.net.Uri
 import android.util.Log
@@ -16,17 +16,21 @@ import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.databinding.CardAdBinding
+import ru.netology.nmedia.databinding.CardTimingBinding
 import ru.netology.nmedia.dto.Ad
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.Timing
 import ru.netology.nmedia.view.load
 import ru.netology.nmedia.view.loadCircleCrop
+
 
 class FeedAdapter(
     private val onInteractionListener: OnInteractionListener,
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
-    private val typeAd = 0
-    private val typePost = 1
+    private val typeTiming =0
+    private val typeAd = 1
+    private val typePost = 2
 
     interface OnInteractionListener {
         fun onLike(post: Post) {}
@@ -35,14 +39,16 @@ class FeedAdapter(
         fun onShare(post: Post) {}
         fun pushPhoto (post: Post) {}
         fun onAdClick(ad: Ad) {}
-
+        fun onTimingClick(timing: Timing){}
     }
 
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Ad -> typeAd
+            is Timing ->typeTiming
             is Post -> typePost
+
             null -> throw IllegalArgumentException("unknown item type")
         }
     }
@@ -56,7 +62,12 @@ class FeedAdapter(
             )
             typePost -> PostViewHolder(
                 CardPostBinding.inflate(layoutInflater, parent, false),
+                onInteractionListener)
+
+            typeTiming -> TimingViewHolder(
+                CardTimingBinding.inflate(layoutInflater, parent, false),
                 onInteractionListener
+
             )
             else -> throw IllegalArgumentException("unknown view type: $viewType")
         }
@@ -67,7 +78,9 @@ class FeedAdapter(
         getItem(position)?.let {
             when (it) {
                 is Post -> (holder as? PostViewHolder)?.bind(it)
-                is Ad -> (holder as? AdViewHolder)?.bind(it)
+                is Ad  -> (holder as? AdViewHolder)?.bind(it )
+
+                is Timing -> (holder as? TimingViewHolder)?.bind(it)
             }
         }
     }
@@ -147,10 +160,14 @@ class FeedAdapter(
             }
         }
     }
+
     class AdViewHolder(
         private val binding: CardAdBinding,
         private val onInteractionListener: OnInteractionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
+
+
+        val service = Wallsevice()
 
         fun bind(ad: Ad) {
             binding.apply {
@@ -158,9 +175,30 @@ class FeedAdapter(
                 image.setOnClickListener {
                     onInteractionListener.onAdClick(ad)
                 }
+                timing.text =  "${service.agoToText}"
             }
         }
     }
+
+
+    class  TimingViewHolder(
+        private val binding: CardTimingBinding,
+        private val onInteractionListener: OnInteractionListener,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(timings: Timing) {
+            binding.apply {
+                val service = Wallsevice()
+
+                timing.text =  "${service.agoToText}"
+
+                timing.setOnClickListener {
+                    onInteractionListener.onTimingClick(timings)
+                }
+            }
+        }
+    }
+
 
     class FeedItemDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
         override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
@@ -176,3 +214,10 @@ class FeedAdapter(
         }
     }
 }
+
+
+
+
+
+
+

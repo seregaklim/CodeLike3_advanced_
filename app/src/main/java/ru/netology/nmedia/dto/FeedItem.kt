@@ -1,8 +1,13 @@
 package ru.netology.nmedia.dto
 
 import ru.netology.nmedia.enumeration.AttachmentType
+import java.sql.Date
+import java.sql.Time
+import java.time.LocalDateTime
 
 sealed class FeedItem{
+
+
     abstract val id: Long
 }
 //классами для рекламы
@@ -10,7 +15,15 @@ data class Ad(
     override val id: Long,
     val url: String,
     val image: String,
+     val timing :Timing
+    ) : FeedItem()
+
+data class Timing (
+    override val id: Long,
+    val  timing: String
+
 ) : FeedItem()
+
 
 data class Post(
     override  val id: Long,

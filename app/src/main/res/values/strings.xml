@@ -41,4 +41,5 @@
     <string name="registered_users"> Available, only to registered users</string>
     <string name="password_does_not_match"> The password does not match, enter it correctly!</string>
     <string name="ad_description">ad</string>
+    <string name="timing_description">Time</string>
 </resources>

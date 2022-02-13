@@ -1,3 +1,8 @@
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDateTime
+import java.time.ZoneId
+
 class Wallsevice {
 
     fun notZeroShare(share: Long) = when (share) {
@@ -34,5 +39,51 @@ class Wallsevice {
         in 100_000..999_999 -> "${this.notZeroShare(likes)} М"
         in 1_000_000..100_000_000 ->"${this.notZeroShare(likes)} М"
         else ->likes
+    }
+
+
+
+//Преобразователь времени
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    val dateTime =  LocalDateTime.now()
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    val zoneDateTime = dateTime.atZone(ZoneId.of("Europe/Moscow"));
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    val sec = zoneDateTime.toInstant().toEpochMilli()/1000
+    val timeHours = sec * 60 * 60
+    val timeMinute = sec * 60
+
+
+    val hours = textHour (timeHours.toInt())
+    val minute = minuteText(timeMinute.toInt(),)
+
+
+    fun tutext (sec: Int, minute: String, hours: String): String =   when (sec){
+        in 0..60 -> "только что"
+        in 61..3600 -> "$minute назад"
+        in 3601..86400 -> "$hours назад"
+        in 86401..172800 -> "сегодня"
+        in 172801..259200 -> "вчера"
+        259200.toInt() -> "давно"
+        else -> "давно"
+    }
+
+    val agoToText = tutext(sec.toInt(), minute, hours)
+
+    fun minuteText (timeMinute: Int,) : String = when {
+        timeMinute % 10 == 1 && timeMinute % 100 !== 11 -> "$timeMinute минуту"
+        timeMinute % 10 in 2..4 && timeMinute % 100 !in 11..19 -> "$timeMinute минуты"
+        else -> "$timeMinute минут"
+    }
+
+    fun textHour(timeHours:Int,) : String = when {
+        timeHours % 10 == 1 && timeHours % 100 !== 11 ->"$timeHours час"
+        timeHours % 10 in 2..4 && timeHours % 100 !in 11..19 -> "$timeHours часа"
+        else -> "$timeHours часов"
     }
 }
