@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.*
 import androidx.paging.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -15,12 +14,6 @@ import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
-import java.sql.Date
-import java.time.Clock
-import java.time.Clock.tickMinutes
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -49,29 +42,33 @@ class PostViewModel @Inject constructor(
 ) : ViewModel() {
 
     val data: Flow<PagingData<FeedItem>>  =repository.data
-     .cachedIn(viewModelScope)
-     .map { pagingData ->
-    //если данные рекламы будут приходить отдельно по сети,
-    // то делать это нужно в репозитории, связав два Flow операторами):
-    pagingData.insertSeparators(
-    generator = { before, after ->
-        if (before?.id?.rem(7) != 0L)
+        .cachedIn(viewModelScope)
 
-            Timing(
-                Random.nextLong(),
-               "")
+        .map { pagingData ->
+            //если данные рекламы будут приходить отдельно по сети,
+            // то делать это нужно в репозитории, связав два Flow операторами):
+
+            pagingData.insertSeparators(
+                generator = { before, after ->
+                    if (before?.id?.rem(7) != 0L)
+
+                        Timing(
+                            Random.nextLong(),
+                            "")
 
 
-        else
+                    else
 
-            Ad(
-                Random.nextLong(),
-                "https://netology.ru",
-                "figma.jpg",
-           Timing(0,  ""))
-}
-    )
-     }
+                        Ad(
+                            Random.nextLong(),
+                            "https://netology.ru",
+                            "figma.jpg",
+                            Timing(0,  ""))
+                }
+            )
+
+        }
+
 
 
 

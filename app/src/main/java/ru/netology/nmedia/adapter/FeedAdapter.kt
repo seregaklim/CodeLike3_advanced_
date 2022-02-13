@@ -8,12 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.databinding.CardAdBinding
 import ru.netology.nmedia.databinding.CardTimingBinding
@@ -21,8 +25,12 @@ import ru.netology.nmedia.dto.Ad
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.Timing
+import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.view.load
 import ru.netology.nmedia.view.loadCircleCrop
+import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.PostViewModel
+import javax.inject.Inject
 
 
 class FeedAdapter(
@@ -85,6 +93,8 @@ class FeedAdapter(
         }
     }
 
+
+
     class PostViewHolder(
         private val binding: CardPostBinding,
         private val onInteractionListener: OnInteractionListener,
@@ -117,6 +127,7 @@ class FeedAdapter(
                         .into(photo)
                 }
 
+             
                 menu.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
                 menu.setOnClickListener {

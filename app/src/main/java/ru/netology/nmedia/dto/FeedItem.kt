@@ -1,9 +1,6 @@
 package ru.netology.nmedia.dto
 
 import ru.netology.nmedia.enumeration.AttachmentType
-import java.sql.Date
-import java.sql.Time
-import java.time.LocalDateTime
 
 sealed class FeedItem{
 
@@ -26,15 +23,15 @@ data class Timing (
 
 
 data class Post(
-    override  val id: Long,
-    val author :String,
+    override val id: Long,
+    val author:String,
     val authorAvatar: String,
     val content: String,
     val published: String,
     var likedByMe: Boolean,
     val likes: Int = 0,
     val newer: Long,
-    val  authorId: Long,
+    val authorId: Long,
     val attachment: Attachment? = null,
     var ownedByMe: Boolean = false
 ): FeedItem()
