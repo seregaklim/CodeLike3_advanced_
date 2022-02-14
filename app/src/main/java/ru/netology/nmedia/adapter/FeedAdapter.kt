@@ -127,7 +127,7 @@ class FeedAdapter(
                         .into(photo)
                 }
 
-             
+
                 menu.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
                 menu.setOnClickListener {
