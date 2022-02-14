@@ -32,8 +32,9 @@ data class Post(
     val likes: Int = 0,
     val newer: Long,
     val authorId: Long,
+    var ownedByMe: Boolean = false,
     val attachment: Attachment? = null,
-    var ownedByMe: Boolean = false
+
 ): FeedItem()
 
 data class Attachment(

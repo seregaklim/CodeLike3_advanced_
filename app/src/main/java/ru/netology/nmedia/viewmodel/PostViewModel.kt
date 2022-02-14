@@ -40,9 +40,15 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     auth: AppAuth,
 ) : ViewModel() {
-    private val cached: Flow<PagingData<FeedItem>> = repository
-        .data
+    
+    val data: Flow<PagingData<FeedItem>>  =repository.data
+        .cachedIn(viewModelScope)
+
         .map { pagingData ->
+            //если данные рекламы будут приходить отдельно по сети,
+            // то делать это нужно в репозитории, связав два Flow операторами):
+
+
             pagingData.insertSeparators(
                 generator = { before, after ->
                     if (before?.id?.rem(7) != 0L)
@@ -62,49 +68,8 @@ class PostViewModel @Inject constructor(
                 }
             )
 
-
-        }
-        .cachedIn(viewModelScope)
-
-    val data: Flow<PagingData<FeedItem>> = auth.authStateFlow
-        .flatMapLatest { (myId, _) ->
-            cached
-                .map { pagingData ->
-                    pagingData.map { item ->
-                        if (item !is Post) item else item.copy(ownedByMe = item.authorId == myId)
-                    }
-                }
         }
 
-            //  val data: Flow<PagingData<FeedItem>>  =repository.data
-            //  .cachedIn(viewModelScope)
-
-            //.map { pagingData ->
-            //если данные рекламы будут приходить отдельно по сети,
-            // то делать это нужно в репозитории, связав два Flow операторами):
-
-
-//                        pagingData.insertSeparators(
-//                            generator = { before, after ->
-//                                if (before?.id?.rem(7) != 0L)
-//
-//                                    Timing(
-//                                        Random.nextLong(),
-//                                        ""
-//                                    )
-//                                else
-//
-//                                    Ad(
-//                                        Random.nextLong(),
-//                                        "https://netology.ru",
-//                                        "figma.jpg",
-//                                        Timing(0, "")
-//                                    )
-//                            }
-//                        )
-//
-//                    }
-            //           }
 
             private val _dataState = MutableLiveData<FeedModelState>()
             val dataState: LiveData<FeedModelState>
