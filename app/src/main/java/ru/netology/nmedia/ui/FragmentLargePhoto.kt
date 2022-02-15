@@ -100,76 +100,8 @@ class FragmentLargePhoto : Fragment() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//package ru.netology.nmedia.activity
-//import Wallsevice
-//import android.os.Bundle
-//import android.view.*
-//import androidx.fragment.app.Fragment
-//import ru.netology.nmedia.R
-//import ru.netology.nmedia.databinding.FragmentLargePhotoBinding
-//import ru.netology.nmedia.viewmodel.PostViewModel
-//import androidx.fragment.app.viewModels
-//import androidx.lifecycle.lifecycleScope
-//import androidx.paging.filter
-//import com.bumptech.glide.Glide
-//import com.google.android.material.snackbar.Snackbar
-//import dagger.hilt.android.AndroidEntryPoint
-//import kotlinx.coroutines.flow.collectLatest
-//import ru.netology.nmedia.auth.AppAuth
-//import ru.netology.nmedia.model.ActionType
-//import ru.netology.nmedia.repository.PostRepository
-//import javax.inject.Inject
-//
-//
-//@AndroidEntryPoint
-//class FragmentLargePhoto : Fragment() {
-//
-//    @Inject
-//    lateinit var repository: PostRepository
-//
-//    @Inject
-//    lateinit var auth: AppAuth
-//
-//    private val viewModel: PostViewModel by viewModels(
-//        ownerProducer = ::requireParentFragment,
-//    )
-//
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        val binding = FragmentLargePhotoBinding.inflate(
-//            inflater, container, false
-//        )
-//
-//          val id = arguments?.getLong("id") ?: -1L
-//
-//        val service = Wallsevice()
-//
-////        lifecycleScope.launchWhenCreated {
+//Подписка работает с feedModel
+// //lifecycleScope.launchWhenCreated {
 ////                viewModel.data.collectLatest { posts ->
 ////                   posts.filter{it.id ==  id} ?.let { post ->
 ////
@@ -192,37 +124,13 @@ class FragmentLargePhoto : Fragment() {
 ////                                viewModel.likeById(post.id)
 ////                            }
 ////                        }
-////                        share.setOnClickListener {
-////                            val intent = Intent().apply {
-////                                action = Intent.ACTION_SEND
-////                                putExtra(Intent.EXTRA_TEXT, post.content)
-////                                type = "text/plain"
-////                            }
-////                            val shareIntent =
-////                                Intent.createChooser(intent, getString(R.string.chooser_share_post))
-////                            startActivity(shareIntent)
-////                        }
-////                    }
-////                }
-////            }}
-//
-//        viewModel.error.observe(viewLifecycleOwner) { error ->
-//            Snackbar.make(
-//                binding.root,
-//                "${getString(R.string.error_loading)}: ${error.message}",
-//                Snackbar.LENGTH_INDEFINITE
-//            ).apply {
-//                setAction(R.string.retry_loading) {
-//                    when (error.action) {
-//                        ActionType.Like -> viewModel.likeById(id.toLong())
-//                        ActionType.unlikeById -> viewModel.unlikeById(id.toLong())
-//                    }
-//                }
-//                show()
-//            }
-//        }
-//        return binding.root
-//    }
-//}
+
+
+
+
+
+
+
+
 
 
