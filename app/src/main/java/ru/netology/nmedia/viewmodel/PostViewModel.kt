@@ -79,6 +79,7 @@ val data: Flow<PagingData<Post>>  =repository.data
     val error: LiveData<ErrorModel>
         get() = _error
 //
+ //работает с  feedmodel
 //        switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
 //     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
 //    val newerCount: LiveData<Int> = data.switchMap {
@@ -224,7 +225,8 @@ val data: Flow<PagingData<Post>>  =repository.data
             )
         }
     }
-
+    //подписаться на конкретный пост в PostDao (лайк)
+    fun getById(id: Long) = repository.getById(id)
 }
 
 

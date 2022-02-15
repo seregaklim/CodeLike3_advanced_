@@ -51,6 +51,10 @@ class PostRepositoryImpl @Inject constructor(
     //подписаться на id первого поста в БД
     override fun getFirstPostId(): Flow<Long?> = postRemoteKeyDao.getFirstPostId()
 
+    //подписаться на конкретный пост в PostDao (лайк)
+    override fun getById(id: Long): Flow<Post?> =
+        postDao.getById(id).map { it?.toDto() }
+
     override suspend fun getAll() {
         try {
             val response = apiService.getAll()

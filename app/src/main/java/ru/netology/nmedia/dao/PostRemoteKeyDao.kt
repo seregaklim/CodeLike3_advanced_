@@ -5,10 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostRemoteKeyEntity
 
 @Dao
 interface PostRemoteKeyDao {
+    //подписаться на конкретный пост в PostDao (лайк)
+    @Query("SELECT * FROM PostEntity WHERE id = :id")
+    fun getById(id: Long): Flow<PostEntity?>
+
+
     @Query("SELECT COUNT(*) == 0 FROM PostRemoteKeyEntity")
     suspend fun isEmpty(): Boolean
 
