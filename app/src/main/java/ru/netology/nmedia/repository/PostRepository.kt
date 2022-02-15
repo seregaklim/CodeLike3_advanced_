@@ -1,5 +1,6 @@
 package ru.netology.nmedia.repository
 
+import androidx.paging.PagingData
 import ru.netology.nmedia.dto.Post
 
 
@@ -12,10 +13,15 @@ import ru.netology.nmedia.dto.User
 
 
 interface PostRepository {
-    val data: Flow<List<Post>>
+    val data: Flow<PagingData<Post>>
     suspend fun getAll()
+
+    //подписаться на конкретный пост в PostDao (лайк)
+    fun getById(id: Long): Flow<Post?>
     //подписаться на изменения data
     fun getNewerCount(id: Long):  Flow<Int>
+    //подписаться на id первого поста в БД
+    fun getFirstPostId(): Flow<Long?>
 
     suspend fun save(post: Post)
     suspend fun removeById(id: Long)
