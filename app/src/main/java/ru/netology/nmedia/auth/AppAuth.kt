@@ -2,6 +2,7 @@ package ru.netology.nmedia.auth
 
 import android.content.Context
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -104,4 +105,10 @@ class AppAuth @Inject constructor(
     }
 }
 
+
+
 data class AuthState(val id: Long = 0, val token: String? = null)
+
+
+
+

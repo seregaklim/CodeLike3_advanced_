@@ -1,18 +1,24 @@
 
 package ru.netology.nmedia.ui
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.filter
+import androidx.paging.map
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.FragmentEnter.Companion.textArg
@@ -35,7 +41,6 @@ class FeedFragment : Fragment() {
     private val authViewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
     )
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,35 +71,20 @@ class FeedFragment : Fragment() {
                 }
 
                 override fun pushPhoto(post: Post) {
-
-                    if (authViewModel.authenticated) {
-
-
-                        findNavController().navigate(R.id.action_feedFragment_to_fragmentLargePhoto,
-                            Bundle().apply {
-
-                                post.attachment?.let {
-
-                                    putString("url", "${BuildConfig.BASE_URL}/media/${it.url}")
-                                    putString("likes", "${post.likes}")
-                                    if (post.likedByMe) {
-                                        putBoolean("likedByMeTrue", true)
-                                    } else {
-
-                                    }
-                                }
-                            }
-                        )
-
-
-                    } else {
-
-                        Snackbar.make(
-                            binding.root,
-                            "${getString(R.string.registered_users)}",
-                            Snackbar.LENGTH_INDEFINITE
-                        )
-                            .show()
+                    post.attachment?.let {
+                        if (authViewModel.authenticated) {
+                            findNavController().navigate(
+                                R.id.action_feedFragment_to_fragmentLargePhoto,
+                                //передаем id
+                                bundleOf("id" to post.id)
+                            )
+                        } else {
+                            Snackbar.make(
+                                binding.root,
+                                "${getString(R.string.registered_users)}",
+                                Snackbar.LENGTH_INDEFINITE
+                            ).show()
+                        }
                     }
                 }
 
@@ -142,10 +132,29 @@ class FeedFragment : Fragment() {
                                 .show()
                         }
                     }
-                }}
+                }
+            }
         )
-
         binding.list.adapter = adapter
+
+//Подписываться на Flow и отправлять данные в adapter:
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest {
+                adapter.submitData(it)
+            }
+        }
+//Показывать индикатор загрузки
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swiperefresh.isRefreshing =
+                    state.refresh is LoadState.Loading ||
+                            state.prepend is LoadState.Loading ||
+                            state.append is LoadState.Loading
+            }
+        }
+//А также реализуем swipe-to-refresh, который поможет обновить все данные:
+        binding.swiperefresh.setOnRefreshListener(adapter::refresh)
+
 
         //обновление странички,Для скрытия или показа значка перезагрузки есть метод isRefreshing
         viewModel.dataState.observe(viewLifecycleOwner, { state ->
@@ -153,7 +162,7 @@ class FeedFragment : Fragment() {
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                    .setAction(R.string.retry_loading) { adapter.loadStateFlow }
                     .show()
             }
         })
@@ -167,11 +176,11 @@ class FeedFragment : Fragment() {
                 Snackbar.LENGTH_INDEFINITE
             ).apply {
                 setAction(R.string.retry_loading) {
-                    when (error.action) {
+                    when(error.action) {
                         ActionType.GetAll -> viewModel.loadPosts()
                         ActionType.Like -> viewModel.likeById(id.toLong())
                         ActionType.unlikeById -> viewModel.unlikeById(id.toLong())
-                        ActionType.Refresh -> viewModel.refreshPosts()
+                        ActionType.Refresh -> adapter.refresh()
                         ActionType.Save -> viewModel.save()
                         ActionType.RemoveById -> viewModel.removeById(id.toLong())
                         ActionType.CountMessegePost -> viewModel.countMessegePost()
@@ -182,26 +191,21 @@ class FeedFragment : Fragment() {
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner, { state ->
-            adapter.submitList(state.posts)
-            binding.emptyText.isVisible = state.empty
-        })
 
         binding.newer.visibility = View.INVISIBLE
-        viewModel.newerCount.observe(viewLifecycleOwner) {
+        lifecycleScope.launchWhenCreated {
+            viewModel.newerCount.collectLatest {
 
-            binding.newer.visibility = if (it == 0) {
-                View.INVISIBLE  //невидимая
-            } else {
-                //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
-                View.VISIBLE
+                binding.newer.visibility = if (it == 0) {
+                    View.INVISIBLE  //невидимая
+                } else {
+                    //  Snackbar.make(binding.root, R.string.add_post, Snackbar.LENGTH_LONG).show()
+                    View.VISIBLE
+                }
+                viewModel.countMessegePost()
+                binding.newer.text = it.toString()
+
             }
-            viewModel.countMessegePost()
-            binding.newer.text = it.toString()
-        }
-
-        binding.swiperefresh.setOnRefreshListener {
-            viewModel.refreshPosts()
         }
 
         binding.fab.setOnClickListener {
@@ -220,16 +224,17 @@ class FeedFragment : Fragment() {
 
         binding.newer.setOnClickListener {
 
-            viewModel.refreshPosts()
+            adapter.refresh()
             viewModel.unCountNewer()
             binding.newer.visibility = View.INVISIBLE
+        }
+
+        //при login/logout'е данные запрашивались с сервера заново
+        authViewModel.data.observe(viewLifecycleOwner) {
+            adapter.refresh()
         }
 
         return binding.root
     }
 }
-
-
-
-
 

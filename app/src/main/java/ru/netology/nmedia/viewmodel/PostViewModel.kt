@@ -1,28 +1,25 @@
 package ru.netology.nmedia.viewmodel
 
-import android.app.Application
 import android.net.Uri
-import androidx.core.net.toFile
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.http.Field
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.auth.AuthState
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
 import javax.inject.Inject
+
+
 
 private val empty = Post(
     id = 0,
@@ -40,91 +37,88 @@ private val empty = Post(
     )
 )
 
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @HiltViewModel
-    class PostViewModel @Inject constructor(
-        private val repository: PostRepository,
-        auth: AppAuth,
-
-        ) : ViewModel() {
-        val data: LiveData<FeedModel> = auth.authStateFlow
-            .flatMapLatest { (myId, _) ->
-                repository.data
-                    .map { posts ->
-                        FeedModel(
-                            posts.map { it.copy(ownedByMe = it.authorId == myId) },
-                            posts.isEmpty()
-                        )
-                    }
-            }.asLiveData(Dispatchers.Default)
-
-
+@OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
+class PostViewModel @Inject constructor(
+    private val repository: PostRepository,
+    auth: AppAuth,
+) : ViewModel() {
+//  //  кэширование данных для downstream flow
+//     private val cached = repository
+//       .data
+//      .cachedIn(viewModelScope)
+//      val data: Flow<PagingData<Post>>  = auth.authStateFlow
+//            .flatMapLatest { (myId, _) ->
+//            //не перезапрашиваем посты заново при смене статуса аутентификации,
+//            // а remap'им существующие из кэша
+//            cached.map { pagingData ->
+//                pagingData.map { post ->
+//                    post.copy(ownedByMe = post.authorId == myId)}
+//            }
+//        }
+//подписка без кеширования
+val data: Flow<PagingData<Post>>  =repository.data
+        .cachedIn(viewModelScope)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
-
-    //    switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
-//     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
-    val newerCount: LiveData<Int> = data.switchMap {
-        repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
-            .catch { e -> e.printStackTrace() }
-            .asLiveData(Dispatchers.Default)
-    }
 
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
-    // LiveData<ErrorModel> (для обработки ошибки)
-    private val _error = SingleLiveEvent<ErrorModel>()
-    val error: LiveData<ErrorModel>
-        get() = _error
-
     private val noPhoto = PhotoModel()
     private val _photo = MutableLiveData(noPhoto)
     val photo: LiveData<PhotoModel>
         get() = _photo
 
-    init {
-        loadPosts()
+    // LiveData<ErrorModel> (для обработки ошибки)
+    private val _error = SingleLiveEvent<ErrorModel>()
+    val error: LiveData<ErrorModel>
+        get() = _error
+//
+ //работает с  feedmodel
+//        switchMap позволяет нам подписаться на изменения data и на основании этого получить новую LiveData.
+//     Т. е.  «предыдущему» Flow будет отправлен cancel, что приведёт к выбросу CancellationException.
+//    val newerCount: LiveData<Int> = data.switchMap {
+//        repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
+//            .catch { e -> e.printStackTrace() }
+//            .asLiveData(Dispatchers.Default)
+//    }
+
+    // подписаться на id первого поста в БД
+    val newerCount: Flow<Int> = repository.getFirstPostId()
+    .flatMapLatest {
+        repository.getNewerCount(it ?: 0)
     }
 
+    init {
+
+        loadPosts()
+    }
 
     fun loadPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
-            repository.getAll()
+            // repository.stream.cachedIn(viewModelScope).
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError, ActionType.GetAll,
-                    e.message ?: "",
-                )
-            )
-            // _dataState.value = FeedModelState(error = true)
-
+            _dataState.value = FeedModelState(error = true)
         }
     }
 
     fun refreshPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
-            repository.getAll()
+//            repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
-            _error.postValue(
-                ErrorModel(
-                    ErrorType.NetworkError, ActionType.Refresh,
-                    e.message ?: "",
-                )
-            )
-            //  _dataState.value = FeedModelState(error = true)
+            _dataState.value = FeedModelState(error = true)
         }
     }
+
     fun save() {
         edited.value?.let {
             _postCreated.value = Unit
@@ -149,7 +143,7 @@ private val empty = Post(
     fun edit(post: Post){
         edited.value = post
 
-        }
+    }
 
     fun changeContent(content: String) {
         val text = content.trim()
@@ -231,7 +225,8 @@ private val empty = Post(
             )
         }
     }
-
+    //подписаться на конкретный пост в PostDao (лайк)
+    fun getById(id: Long) = repository.getById(id)
 }
 
 

@@ -29,7 +29,6 @@ fun retrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
     .client(client)
     .build()
 
-
 interface ApiService {
 
     @POST("users/push-tokens")
@@ -38,10 +37,6 @@ interface ApiService {
 
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
-
-    //метод  который возвращает все посты новее определённого:
-    @GET("posts/{id}/newer")
-    suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 
     @GET("posts/{id}")
     suspend fun getById(@Path("id") id: Long): Response<Post>
@@ -62,7 +57,35 @@ interface ApiService {
     @POST("media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
-   // "users/authentication"
+    //метод  который возвращает все посты новее определённого:
+    @GET("posts/{id}/newer")
+    suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
+
+    //Примечание*: в реальной жизни никто вам не даст загружать сколько угодно,
+    // т.к. это брешь в безопасности. Всегда узнавайте у разработчика API лимит.
+
+    //Дает возможность загружать записи, «старше»  (т.е. созданные раньше) по id указанной:
+    //Для подгрузки данных при скроллировании вниз:
+    @GET("posts/{id}/before")
+    suspend fun getBefore(
+        @Path("id") id: Long,
+        @Query("count") count: Int
+    ): Response<List<Post>>
+
+
+    //Дает возможность загружать последние 10 (или сколько указано пользователем записей*)
+   //Для загрузки начальных данных (в определенном количестве)
+    @GET("posts/latest")
+    suspend fun getLatest(@Query("count") count: Int): Response<List<Post>>
+
+    //getAfter, который грузит посты с id'шниками больше переданного
+    @GET("posts/{id}/after")
+    suspend fun getAfter(
+        @Path("id") id: Long,
+        @Query("count") count: Int
+    ): Response<List<Post>>
+
+
     @FormUrlEncoded
     @POST("users/authentication")
     suspend fun  loginUser(
@@ -71,8 +94,6 @@ interface ApiService {
     ): Response<Token>
 
 
-
-    //"users/registration"
     @FormUrlEncoded
    @POST("users/registration")
     suspend fun registerUser(@Field("login") login: String,
