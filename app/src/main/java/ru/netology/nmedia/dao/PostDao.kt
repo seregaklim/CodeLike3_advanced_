@@ -9,6 +9,10 @@ import ru.netology.nmedia.enumeration.AttachmentType
 
 @Dao
 interface PostDao {
+    //подписаться на конкретный пост в PostDao (лайк)
+    @Query("SELECT * FROM PostEntity WHERE id = :id")
+    fun getById(id: Long): Flow<PostEntity?>
+
     //Для нашего PagingSource - Key = Int, Value = PostEntity:
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun pagingSource(): PagingSource<Int, PostEntity>

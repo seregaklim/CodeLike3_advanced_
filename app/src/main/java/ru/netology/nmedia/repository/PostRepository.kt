@@ -16,6 +16,8 @@ interface PostRepository {
     val data: Flow<PagingData<Post>>
     suspend fun getAll()
 
+    //подписаться на конкретный пост в PostDao (лайк)
+    fun getById(id: Long): Flow<Post?>
     //подписаться на изменения data
     fun getNewerCount(id: Long):  Flow<Int>
     //подписаться на id первого поста в БД

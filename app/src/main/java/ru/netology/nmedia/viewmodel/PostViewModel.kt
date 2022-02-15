@@ -249,6 +249,9 @@ class PostViewModel @Inject constructor(
                 }
             }
 
-        }
+    //подписаться на конкретный пост в PostDao (лайк)
+    fun getById(id: Long) = repository.getById(id)
+
+}
 
 
