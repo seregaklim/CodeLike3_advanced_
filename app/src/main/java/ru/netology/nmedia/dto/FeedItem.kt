@@ -1,10 +1,19 @@
 package ru.netology.nmedia.dto
 
+import android.annotation.SuppressLint
+import android.os.Build
+import android.provider.ContactsContract
+import androidx.annotation.RequiresApi
 import ru.netology.nmedia.enumeration.AttachmentType
+import java.time.Instant
+import java.time.Instant.now
+import java.time.LocalDate
+import java.time.Month
+import java.util.*
 
 sealed class FeedItem{
 
-
+abstract val timing:Long
     abstract val id: Long
 }
 //классами для рекламы
@@ -12,17 +21,18 @@ data class Ad(
     override val id: Long,
     val url: String,
     val image: String,
-     val timing :Timing
+  override  val timing: Long=data()
     ) : FeedItem()
 
 data class Timing (
     override val id: Long,
-    val  timing: String
+ override   val timing: Long=data()
 
-) : FeedItem()
+    ) : FeedItem()
 
 
-data class Post(
+data class Post
+(
     override val id: Long,
     val author:String,
     val authorAvatar: String,
@@ -33,13 +43,20 @@ data class Post(
     val newer: Long,
     val authorId: Long,
     var ownedByMe: Boolean = false,
+    override    val timing: Long=data(),
     val attachment: Attachment? = null,
 
-): FeedItem()
+    ): FeedItem()
+
 
 data class Attachment(
     val url: String,
     val type: AttachmentType,
 )
 
+fun  data(): Long {
+    val date=Date();
+    val  time:Long  = date.getTime();
+    return time
+}
 

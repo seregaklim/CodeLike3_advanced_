@@ -14,25 +14,27 @@ import ru.netology.nmedia.model.*
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.random.Random
 
 
-private val empty = Post(
+private val empty= Post(
     id = 0,
-    content = "",
     author = "",
     authorAvatar = "",
-    authorId = 0,
+    content = "",
+    published = "",
     likedByMe = false,
     likes = 0,
-    published = "",
     newer =0,
+    authorId = 0,
     attachment = Attachment (
         url = "http://10.0.2.2:9999/media/d7dff806-4456-4e35-a6a1-9f2278c5d639.png",
         type = AttachmentType.IMAGE
     )
 )
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -55,15 +57,14 @@ class PostViewModel @Inject constructor(
 
                         Timing(
                             Random.nextLong(),
-                            ""
-                        )
+                            )
                     else
 
                         Ad(
                             Random.nextLong(),
                             "https://netology.ru",
                             "figma.jpg",
-                            Timing(0, "")
+
                         )
                 }
             )

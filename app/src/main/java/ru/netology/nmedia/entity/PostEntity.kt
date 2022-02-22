@@ -4,6 +4,8 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.Timing
+import java.time.LocalDate
 
 @Entity
 data class PostEntity(
@@ -19,15 +21,29 @@ data class PostEntity(
     val newer:Long,
     val  authorId: Long,
     var ownedByMe: Boolean = false,
+    var  timing: Long,
     @Embedded
     var attachment: AttachmentEmbeddable?,
 ) {
-    fun toDto() = Post(id, author, authorAvatar, content, published, likedByMe, likes,newer,authorId,ownedByMe, attachment?.toDto())
+    fun toDto() = Post(
+        id,
+        author,
+        authorAvatar,
+        content,
+        published,
+        likedByMe,
+        likes,
+        newer,
+        authorId,
+        ownedByMe,
+         timing,
+        attachment?.toDto()
+    )
 
     companion object {
         fun fromDto(dto: Post) =
             PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,dto.newer,
-                dto.authorId,dto.ownedByMe, AttachmentEmbeddable.fromDto(dto.attachment))
+                dto.authorId,dto.ownedByMe,dto.timing, AttachmentEmbeddable.fromDto(dto.attachment))
 
     }
 }
