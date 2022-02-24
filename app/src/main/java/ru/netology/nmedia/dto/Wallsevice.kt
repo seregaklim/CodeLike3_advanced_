@@ -40,6 +40,7 @@ class Wallsevice {
     }
 
 
+<<<<<<< HEAD
 
 
     val date= Date();
@@ -58,6 +59,62 @@ class Wallsevice {
     in 48..168 -> "На прошлой неделе!"
     else -> "давно"
 }
+=======
+
+//
+//    fun timeСonverter () {
+//
+//        val date = Date();
+//        val nowTime: Long = date.getTime()
+//        val nowHours = fun(post: Post): Int {
+//            val h = nowTime - post.timing
+//            val hours = h / 60 / 60
+//            return hours.toInt()
+//
+//        }
+//
+//
+//
+//
+//
+//        val s = when (nowHours) {
+//            in 0..24 -> "Сегодня!"
+//            in 24..48 -> "Вчера!"
+//            in 48..168 -> "На прошлой неделе!"
+//            else -> "давно"
+//        }
+//
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    val date= Date();
+//    val  nowTime:Long  = date.getTime()
+//    val nowHours= fun(post: Post): Long {
+//        val h = nowTime - post.timing
+//        val hours = h /60/60
+//        return hours
+//
+//    }
+//
+//
+//    fun timeСonverter (): String =   when (nowHours){
+//    in 0..24 -> "Сегодня!"
+//    in 24..48 -> "Вчера!"
+//    in 48..168 -> "На прошлой неделе!"
+//    else -> "давно"
+//}
+>>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
 
 
 
