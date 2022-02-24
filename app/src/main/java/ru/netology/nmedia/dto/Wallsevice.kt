@@ -1,11 +1,5 @@
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import ru.netology.nmedia.dto.Post
+import java.util.*
 
 class Wallsevice {
 
@@ -46,41 +40,87 @@ class Wallsevice {
     }
 
 
-    //Текущее время
-    @RequiresApi(Build.VERSION_CODES.O)
-    val then = run {
-        val dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy")
-        val timeFormatter = DateTimeFormatter.ofPattern("H:m")
-        val date = LocalDate.parse("Feb 13 2022", dateFormatter)
-        val time = LocalTime.parse("22:13", timeFormatter)
-        date.atTime(time)
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    val now = LocalDateTime.now()
-    // конвектор времени
-    @RequiresApi(Build.VERSION_CODES.O)
-    val hours = then.until(now, ChronoUnit.HOURS)
-    @RequiresApi(Build.VERSION_CODES.O)
-    val days = then.until(now, ChronoUnit.DAYS)
-    @RequiresApi(Build.VERSION_CODES.O)
-    val secunds = then.until(now, ChronoUnit.SECONDS)
 
+
+    val date= Date();
+    val  nowTime:Long  = date.getTime()
+    val nowHours= fun(post: Post): Long {
+        val h = nowTime - post.timing
+        val hours = h /60/60
+        return hours
+
+    }
+
+
+    fun timeСonverter (): String =   when (nowHours){
+    in 0..24 -> "Сегодня!"
+    in 24..48 -> "Вчера!"
+    in 48..168 -> "На прошлой неделе!"
+    else -> "давно"
+}
+
+
+
+
+
+
+
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//val agoToText =  timeСonverter(post)
     // преобразователь времени в часах
 
 //Сегодня: элементы, опубликованные в пределах от текущего времени до текущее время - 24 часа.
 //Вчера: элементы, опубликованные в пределах от текущего времени - 24 часа до текущее время - 48 часов.
 //На прошлой неделе: всё, что старше текущее время - 48 часов.
 
-    fun timeСonverter ( hours: Long): String =   when (hours){
-        in 0..24 -> "Сегодня!"
-        in 24..48 -> "Вчера!"
-        in 48..168 -> "На прошлой неделе!"
-        else -> "давно"
-    }
-    val agoToText =  timeСonverter( hours)
+
+//fun timeСonverter ( hours: Long): String =   when (){
+//    in 0..24 -> "Сегодня!"
+//    in 24..48 -> "Вчера!"
+//    in 48..168 -> "На прошлой неделе!"
+//    else -> "давно"
+//}
+//val agoToText =  timeСonverter( hours)
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//fun timeСonverter ( hours: Long): String =   when (hours){
+//    in 0..24 -> "Сегодня!"
+//    in 24..48 -> "Вчера!"
+//    in 48..168 -> "На прошлой неделе!"
+//    else -> "давно"
+//}
+//val agoToText =  timeСonverter( hours)
+//
+//
+//}
+
+
+
+
+
+
+
+
 
 
 
