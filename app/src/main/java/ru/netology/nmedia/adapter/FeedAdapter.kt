@@ -25,7 +25,10 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.Timing
 import ru.netology.nmedia.view.load
 import ru.netology.nmedia.view.loadCircleCrop
+<<<<<<< HEAD
+=======
 
+>>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
 
 
 class FeedAdapter(
@@ -241,6 +244,14 @@ class FeedAdapter(
                 image.setOnClickListener {
                     onInteractionListener.onAdClick(ad)
                 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                timing.text =  "${service.timeСonverter()}"
+=======
+>>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
+               // timing.text =  "${service.agoToText}"
+>>>>>>> efee44face09fa4eefa0db16c6b2ac97051d11e6
             }
         }
     }
@@ -253,8 +264,17 @@ class FeedAdapter(
         fun bind(timings: Timing) {
             binding.apply {
                 val service = Wallsevice()
+<<<<<<< HEAD
+                timing.text =  "${service.timeСonverter()}"
+           //   timing.text =  "${service.agoToText}"
+=======
 
+<<<<<<< HEAD
                 timing.text =  "${service.timeСonverter(timings.timing)}"
+=======
+              //  timing.text =  "${service.agoToText}"
+>>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
+>>>>>>> efee44face09fa4eefa0db16c6b2ac97051d11e6
 
                 timing.setOnClickListener {
                     onInteractionListener.onTimingClick(timings)

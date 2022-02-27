@@ -24,7 +24,11 @@ private val empty= Post(
     author = "",
     authorAvatar = "",
     content = "",
+<<<<<<< HEAD
+    published = 7,
+=======
     published = "",
+>>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
     likedByMe = false,
     likes = 0,
     newer =0,

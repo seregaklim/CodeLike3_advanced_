@@ -44,6 +44,7 @@ class Wallsevice() {
 
     val hours = fun(timing: Long): Long {
 
+<<<<<<< HEAD
         val currentDate = Date()
        //текущщее время минус дата создания поста
         val time = currentDate.time-timing
@@ -62,6 +63,107 @@ class Wallsevice() {
         in 48..168 -> "На прошлой неделе!"
         else -> "давно"
     }
+=======
+<<<<<<< HEAD
+
+
+    val date= Date();
+    val  nowTime:Long  = date.getTime()
+    val nowHours= fun(post: Post): Long {
+        val h = nowTime - post.timing
+        val hours = h /60/60
+        return hours
+
+    }
+
+
+    fun timeСonverter (): String =   when (nowHours){
+    in 0..24 -> "Сегодня!"
+    in 24..48 -> "Вчера!"
+    in 48..168 -> "На прошлой неделе!"
+    else -> "давно"
+}
+=======
+
+//
+//    fun timeСonverter () {
+//
+//        val date = Date();
+//        val nowTime: Long = date.getTime()
+//        val nowHours = fun(post: Post): Int {
+//            val h = nowTime - post.timing
+//            val hours = h / 60 / 60
+//            return hours.toInt()
+//
+//        }
+//
+//
+//
+//
+//
+//        val s = when (nowHours) {
+//            in 0..24 -> "Сегодня!"
+//            in 24..48 -> "Вчера!"
+//            in 48..168 -> "На прошлой неделе!"
+//            else -> "давно"
+//        }
+//
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    val date= Date();
+//    val  nowTime:Long  = date.getTime()
+//    val nowHours= fun(post: Post): Long {
+//        val h = nowTime - post.timing
+//        val hours = h /60/60
+//        return hours
+//
+//    }
+//
+//
+//    fun timeСonverter (): String =   when (nowHours){
+//    in 0..24 -> "Сегодня!"
+//    in 24..48 -> "Вчера!"
+//    in 48..168 -> "На прошлой неделе!"
+//    else -> "давно"
+//}
+>>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
+
+
+
+
+
+
+
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//val agoToText =  timeСonverter(post)
+    // преобразователь времени в часах
+
+//Сегодня: элементы, опубликованные в пределах от текущего времени до текущее время - 24 часа.
+//Вчера: элементы, опубликованные в пределах от текущего времени - 24 часа до текущее время - 48 часов.
+//На прошлой неделе: всё, что старше текущее время - 48 часов.
+
+
+//fun timeСonverter ( hours: Long): String =   when (){
+//    in 0..24 -> "Сегодня!"
+//    in 24..48 -> "Вчера!"
+//    in 48..168 -> "На прошлой неделе!"
+//    else -> "давно"
+//}
+//val agoToText =  timeСonverter( hours)
+>>>>>>> efee44face09fa4eefa0db16c6b2ac97051d11e6
 
 
 }
