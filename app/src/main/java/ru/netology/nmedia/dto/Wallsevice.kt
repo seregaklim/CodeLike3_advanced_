@@ -1,6 +1,7 @@
 import java.util.*
 import android.os.Parcel
 import android.os.Parcelable
+import ru.netology.nmedia.dto.Post
 import java.text.SimpleDateFormat
 
 
@@ -44,46 +45,45 @@ class Wallsevice() {
 
     val hours = fun(timing: Long): Long {
 
-<<<<<<< HEAD
         val currentDate = Date()
-       //текущщее время минус дата создания поста
-        val time = currentDate.time-timing
+        //текущщее время минус дата создания поста
+        val time = currentDate.time - timing
         //переводим в дни
-      // val days = time / 1000 / 3600 / 24
-      //переводим в часы
-       val  hours  =time / 1000 / 3600
+        // val days = time / 1000 / 3600 / 24
+        //переводим в часы
+        val hours = time / 1000 / 3600
 
-        val strHours= hours.toLong()
+        val strHours = hours.toLong()
         return strHours
     }
-   //конвектор часовой
-    fun timeСonverter(timing:Long): String = when (this.hours(timing)) {
+
+    //конвектор часовой
+    fun timeСonverter(timing: Long): String = when (this.hours(timing)) {
         in 0..24 -> "Сегодня!"
         in 24..48 -> "Вчера!"
         in 48..168 -> "На прошлой неделе!"
         else -> "давно"
     }
-=======
-<<<<<<< HEAD
-
-
-    val date= Date();
-    val  nowTime:Long  = date.getTime()
-    val nowHours= fun(post: Post): Long {
-        val h = nowTime - post.timing
-        val hours = h /60/60
-        return hours
-
-    }
-
-
-    fun timeСonverter (): String =   when (nowHours){
-    in 0..24 -> "Сегодня!"
-    in 24..48 -> "Вчера!"
-    in 48..168 -> "На прошлой неделе!"
-    else -> "давно"
 }
-=======
+
+
+//    val date= Date();
+//    val  nowTime:Long  = date.getTime()
+//    val nowHours= fun(post: Post): Long {
+//        val h = nowTime - post.timing
+//        val hours = h /60/60
+//        return hours
+//
+//    }
+//
+//
+//    fun timeСonverter (): String =   when (nowHours){
+//    in 0..24 -> "Сегодня!"
+//    in 24..48 -> "Вчера!"
+//    in 48..168 -> "На прошлой неделе!"
+//    else -> "давно"
+//}
+
 
 //
 //    fun timeСonverter () {
@@ -138,7 +138,6 @@ class Wallsevice() {
 //    in 48..168 -> "На прошлой неделе!"
 //    else -> "давно"
 //}
->>>>>>> 49f0ae467f8392f994cf9a5438ae89fe8845fe9c
 
 
 
@@ -163,10 +162,10 @@ class Wallsevice() {
 //    else -> "давно"
 //}
 //val agoToText =  timeСonverter( hours)
->>>>>>> efee44face09fa4eefa0db16c6b2ac97051d11e6
 
 
-}
+
+
 
 
 
