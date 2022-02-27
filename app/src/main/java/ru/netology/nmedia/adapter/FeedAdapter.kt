@@ -88,8 +88,25 @@ class FeedAdapter(
     }
 
 
-  override  fun onBindViewHolder(
-        holder:  RecyclerView.ViewHolder,
+//  override  fun onBindViewHolder(
+//        holder:  RecyclerView.ViewHolder,
+//        position: Int,
+//        payloads: List<Any>
+//    ) {
+//        if (payloads.isEmpty()) {
+//            onBindViewHolder(holder, position)
+//        } else {
+//            payloads.forEach {
+//                if (it is Payload) {
+//                    (holder as PostViewHolder).bind(it as Post)
+//
+//                }
+//            }
+//        }
+//    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
         position: Int,
         payloads: List<Any>
     ) {
@@ -98,44 +115,47 @@ class FeedAdapter(
         } else {
             payloads.forEach {
                 if (it is Payload) {
-                    (holder as PostViewHolder).bind(it as Post)
+                    (holder as PostViewHolder).bind(it)
 
                 }
             }
         }
     }
 
+
     class PostViewHolder(
         private val binding: CardPostBinding,
         private val onInteractionListener: OnInteractionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(payload: Payload,post: Post) {
-
+        fun bind(payload: Payload,) {
             payload.liked?.also { liked ->
-                binding.   like.isChecked = post.likedByMe
-               binding. like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+                binding.like.isChecked = liked
+                // Вы можете добавить количество лайков в Payload, если нужно
+                //   binding. like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
+                payload.likedText?.also {
+                    binding.like.text = it.toString()
 
+                    if (liked) {
+                        ObjectAnimator.ofPropertyValuesHolder(
 
-                if (liked) {
-                    ObjectAnimator.ofPropertyValuesHolder(
-
-                                binding.like,
-                        PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F, 1.2F),
-                        PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F, 1.2F)
-                    ).start()
-                } else {
-                    ObjectAnimator.ofFloat(
-                        binding.like,
-                        View.ROTATION,
-                        0F, 360F
-                    ).start()
+                            binding.like,
+                            PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F, 1.2F),
+                            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F, 1.2F)
+                        ).start()
+                    } else {
+                        ObjectAnimator.ofFloat(
+                            binding.like,
+                            View.ROTATION,
+                            0F, 360F
+                        ).start()
+                    }
                 }
+
             }
 
             payload.content?.let(binding.content::setText)
         }
-
 
         val service = Wallsevice()
         fun bind(post: Post) {
@@ -147,8 +167,6 @@ class FeedAdapter(
                 like.isChecked = post.likedByMe
                 like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
 
-                // like.isChecked = post.likedByMe
-                 // like.text = "${post.likes}"
                 //   share.isChecked
                 //share.text = "${service.zeroingOutShare(post.share.toLong())}"
 
@@ -171,7 +189,6 @@ class FeedAdapter(
                     PopupMenu(it.context, it).apply {
 
                         inflate(R.menu.options_post)
-                        // TODO: if we don't have other options, just remove dots
 
                         menu.setGroupVisible(R.id.owned, post.ownedByMe)
 
@@ -219,14 +236,14 @@ class FeedAdapter(
         fun bind(ad: Ad) {
             binding.apply {
                 image.load("${BuildConfig.BASE_URL}/media/${ad.image}")
+
+                timing.text =  "${service.timeСonverter(ad.timing)}"
                 image.setOnClickListener {
                     onInteractionListener.onAdClick(ad)
                 }
-               // timing.text =  "${service.agoToText}"
             }
         }
     }
-
 
     class  TimingViewHolder(
         private val binding: CardTimingBinding,
@@ -237,7 +254,7 @@ class FeedAdapter(
             binding.apply {
                 val service = Wallsevice()
 
-              //  timing.text =  "${service.agoToText}"
+                timing.text =  "${service.timeСonverter(timings.timing)}"
 
                 timing.setOnClickListener {
                     onInteractionListener.onTimingClick(timings)
@@ -265,51 +282,21 @@ class FeedAdapter(
                 Payload(
                     liked = newItem.likedByMe.takeIf { oldItem.likedByMe != it },
                     content = newItem.content.takeIf { oldItem.content != it },
-                )
+                    likedText =newItem.likes.takeIf{oldItem.likes !=it},
+                    )
             } else {
                 null
             }
+
     }
 
 }
 
-
 data class Payload(
     val liked: Boolean? = null,
     val content: String? = null,
-)
-
-
-
-
-
-
-
-
-
-
-//    abstract class FeedItemDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
-//        override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
-//            if (oldItem::class != newItem::class) {
-//                return false
-//            }
-//
-//            return oldItem.id == newItem.id
-//        }
-//
-//        override fun areContentsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
-//            return oldItem == newItem
-//        }
-//
-//         override fun getChangePayload(oldItem: FeedItem, newItem: FeedItem): Any =
-//            Payload(
-//                liked = newItem.likedByMe.takeIf { oldItem.likedByMe != it },
-//                content = newItem.content.takeIf { oldItem.content != it },
-//            )
-//    }
-
-
-
+    val likedText: Int? = null
+    )
 
 
 

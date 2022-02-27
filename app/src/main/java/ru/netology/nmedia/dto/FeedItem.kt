@@ -48,15 +48,14 @@ data class Post
 
     ): FeedItem()
 
-
-data class Attachment(
-    val url: String,
-    val type: AttachmentType,
-)
-
+//метод времени
 fun  data(): Long {
     val date=Date();
     val  time:Long  = date.getTime();
     return time
 }
 
+data class Attachment(
+    val url: String,
+    val type: AttachmentType,
+)

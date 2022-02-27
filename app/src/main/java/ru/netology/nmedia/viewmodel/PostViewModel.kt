@@ -56,7 +56,9 @@ class PostViewModel @Inject constructor(
                     if (before?.id?.rem(7) != 0L)
 
                         Timing(
+
                             Random.nextLong(),
+                            timing=data()
                             )
                     else
 
@@ -64,7 +66,7 @@ class PostViewModel @Inject constructor(
                             Random.nextLong(),
                             "https://netology.ru",
                             "figma.jpg",
-
+                            timing=data()
                         )
                 }
             )
