@@ -47,11 +47,12 @@ class Wallsevice() {
 
         val currentDate = Date()
         //текущщее время минус дата создания поста
-        val time = currentDate.time - timing
+        val time = currentDate.time  - timing
+
         //переводим в дни
-        // val days = time / 1000 / 3600 / 24
+       // val days = time / 1000 / 3600 / 24
         //переводим в часы
-        val hours = time / 1000 / 3600
+        val hours = time/ 1000/3600
 
         val strHours = hours.toLong()
         return strHours

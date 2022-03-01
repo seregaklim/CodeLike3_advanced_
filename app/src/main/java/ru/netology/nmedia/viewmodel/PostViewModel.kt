@@ -50,27 +50,16 @@ class PostViewModel @Inject constructor(
             //если данные рекламы будут приходить отдельно по сети,
             // то делать это нужно в репозитории, связав два Flow операторами):
 
-
             pagingData.insertSeparators(
                 generator = { before, after ->
-                    if (before?.id?.rem(7) != 0L)
-
-                        Timing(
-
-                            Random.nextLong(),
-                            timing=data()
-                            )
-                    else
-
+                    if (before?.id?.rem(5) != 0L) null else
                         Ad(
                             Random.nextLong(),
                             "https://netology.ru",
-                            "figma.jpg",
-                            timing=data()
+                            "figma.jpg"
                         )
                 }
             )
-
         }
 
 

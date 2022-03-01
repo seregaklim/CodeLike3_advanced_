@@ -4,14 +4,12 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.Timing
-import java.time.LocalDate
+
 
 @Entity
 data class PostEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-
     val author: String,
     val authorAvatar: String,
     val content: String,

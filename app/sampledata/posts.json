@@ -10,7 +10,8 @@
       "likes": 100,
       "newer": 10,
       "newerByMe": true,
-      "share" : 2
+      "share" : 2,
+      "timing": "Вчера"
     }
   ]
 }

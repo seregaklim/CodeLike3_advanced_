@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.BounceInterpolator
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
@@ -18,20 +19,17 @@ import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.databinding.CardAdBinding
-import ru.netology.nmedia.databinding.CardTimingBinding
 import ru.netology.nmedia.dto.Ad
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.Timing
 import ru.netology.nmedia.view.load
 import ru.netology.nmedia.view.loadCircleCrop
 
 class FeedAdapter(
     private val onInteractionListener: OnInteractionListener,
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
-    private val typeTiming =0
-    private val typeAd = 1
-    private val typePost = 2
+    private val typeAd = 0
+    private val typePost = 1
 
     interface OnInteractionListener {
         fun onLike(post: Post) {}
@@ -40,15 +38,12 @@ class FeedAdapter(
         fun onShare(post: Post) {}
         fun pushPhoto (post: Post) {}
         fun onAdClick(ad: Ad) {}
-        fun onTimingClick(timing: Timing){}
-    }
 
+    }
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Ad -> typeAd
-            is Timing ->typeTiming
             is Post -> typePost
-
             null -> throw IllegalArgumentException("unknown item type")
         }
     }
@@ -62,12 +57,7 @@ class FeedAdapter(
             )
             typePost -> PostViewHolder(
                 CardPostBinding.inflate(layoutInflater, parent, false),
-                onInteractionListener)
-
-            typeTiming -> TimingViewHolder(
-                CardTimingBinding.inflate(layoutInflater, parent, false),
                 onInteractionListener
-
             )
             else -> throw IllegalArgumentException("unknown view type: $viewType")
         }
@@ -78,27 +68,7 @@ class FeedAdapter(
         getItem(position)?.let {
             when (it) {
                 is Post -> (holder as? PostViewHolder)?.bind(it)
-                is Ad  -> (holder as? AdViewHolder)?.bind(it )
-
-                is Timing -> (holder as? TimingViewHolder)?.bind(it)
-            }
-        }
-    }
-
-
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-        payloads: List<Any>
-    ) {
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
-        } else {
-            payloads.forEach {
-                if (it is Payload) {
-                    (holder as PostViewHolder).bind(it)
-
-                }
+                is Ad -> (holder as? AdViewHolder)?.bind(it)
             }
         }
     }
@@ -117,7 +87,11 @@ class FeedAdapter(
                 payload.likedText?.also {
                     binding.like.text = it.toString()
 
-                    if (liked) {
+
+
+
+
+                    if (liked ) {
                         ObjectAnimator.ofPropertyValuesHolder(
 
                             binding.like,
@@ -125,10 +99,14 @@ class FeedAdapter(
                             PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F, 1.2F)
                         ).start()
                     } else {
+
+
+
                         ObjectAnimator.ofFloat(
                             binding.like,
                             View.ROTATION,
-                            0F, 360F
+                            0F, 360F,
+
                         ).start()
                     }
                 }
@@ -147,7 +125,8 @@ class FeedAdapter(
                 avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
                 like.isChecked = post.likedByMe
                 like.text = "${service.zeroingOutLikes(post.likes.toLong())}"
-
+                timing.text =  "${service.timeСonverter(post.timing)}"
+               // timing.text =  post.timing.toString()
                 //   share.isChecked
                 //share.text = "${service.zeroingOutShare(post.share.toLong())}"
 
@@ -194,6 +173,24 @@ class FeedAdapter(
                     onInteractionListener.onLike(post)
                 }
 
+
+
+
+//                like.setOnClickListener {
+//                    val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1F, 1.25F, 1F)
+//                    val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1F, 1.25F, 1F)
+//                    ObjectAnimator.ofPropertyValuesHolder(it, scaleX, scaleY).apply {
+//                        duration = 500
+//                        repeatCount = 50
+//                        interpolator = BounceInterpolator()
+//                    }.start()
+//                    onInteractionListener.onLike(post)
+//                }
+
+
+
+
+
                 share.setOnClickListener {
                     onInteractionListener.onShare(post)
                 }
@@ -211,36 +208,11 @@ class FeedAdapter(
         private val onInteractionListener: OnInteractionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-
-        val service = Wallsevice()
-
         fun bind(ad: Ad) {
             binding.apply {
                 image.load("${BuildConfig.BASE_URL}/media/${ad.image}")
-
-                timing.text =  "${service.timeСonverter(ad.timing)}"
                 image.setOnClickListener {
                     onInteractionListener.onAdClick(ad)
-                }
-
-
-            }
-        }
-    }
-
-    class  TimingViewHolder(
-        private val binding: CardTimingBinding,
-        private val onInteractionListener: OnInteractionListener,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(timings: Timing) {
-            binding.apply {
-                val service = Wallsevice()
-
-                timing.text =  "${service.timeСonverter(timings.timing)}"
-
-                timing.setOnClickListener {
-                    onInteractionListener.onTimingClick(timings)
                 }
             }
         }
