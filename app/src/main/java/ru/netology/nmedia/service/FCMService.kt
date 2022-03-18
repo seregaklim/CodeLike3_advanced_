@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.google.android.gms.common.api.Api
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -22,9 +21,8 @@ import ru.netology.nmedia.dto.PushToken
 import kotlin.random.Random
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.PostDao
 import javax.inject.Inject
-import javax.inject.Singleton
+
 
 
 @AndroidEntryPoint

@@ -1,16 +1,20 @@
 package ru.netology.nmedia.repository
-
-import androidx.lifecycle.*
+import androidx.paging.*
+import com.google.android.gms.common.GoogleApiAvailability
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import ru.netology.nmedia.api.*
+import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dto.*
+import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.db.AppDb
+import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.dto.Media
+import ru.netology.nmedia.dto.MediaUpload
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
-import ru.netology.nmedia.entity.toDto
 import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.enumeration.AttachmentType
 import ru.netology.nmedia.error.ApiError
@@ -21,16 +25,36 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
 class PostRepositoryImpl @Inject constructor(
+    appDb: AppDb,
     private val postDao: PostDao,
+    postRemoteKeyDao: PostRemoteKeyDao,
     private val apiService: ApiService,
-) : PostRepository {
 
-    override val data = postDao.getAll()
-        .map(List<PostEntity>::toDto)
-        .flowOn(Dispatchers.Default)
+    ) : PostRepository {
+
+    //Вызов refresh на adapter'е автоматически приведёт к загрузке данных и
+    // очищению старых данных – будет создан новый экземпляр PagingSource
+    @OptIn(ExperimentalPagingApi::class)
+    override val data: Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(pageSize = 25),
+        remoteMediator = PostRemoteMediator(apiService, appDb, postDao, postRemoteKeyDao),
+        pagingSourceFactory = postDao::pagingSource,
+//Но во ViewModel нам нужно Post, а не PostEntity, поэтому нужно добавить map для конвертации:
+        ).flow.map { pagingData ->
+        pagingData.map(PostEntity::toDto)
+    }
+
+    @Inject
+    lateinit var postRemoteKeyDao: PostRemoteKeyDao
+    //подписаться на id первого поста в БД
+    override fun getFirstPostId(): Flow<Long?> = postRemoteKeyDao.getFirstPostId()
+
+    //подписаться на конкретный пост в PostDao (лайк)
+    override fun getById(id: Long): Flow<Post?> =
+        postDao.getById(id).map { it?.toDto() }
+
 
     override suspend fun getAll() {
         try {
@@ -47,6 +71,8 @@ class PostRepositoryImpl @Inject constructor(
             throw UnknownError
         }
     }
+
+
 
     //метод  который возвращает все посты новее определённого:
     override fun getNewerCount(id: Long): Flow<Int> = flow {
